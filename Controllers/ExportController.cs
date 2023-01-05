@@ -1,18 +1,13 @@
-using System;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Data;
-using System.Globalization;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Globalization;
+using System.Linq.Dynamic.Core;
 using System.Reflection;
-using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace SimplyMTD.Controllers
 {
@@ -208,7 +203,7 @@ namespace SimplyMTD.Controllers
                 type.GetGenericTypeDefinition() == typeof(Nullable<>) ?
                 Nullable.GetUnderlyingType(type) : type;
 
-            if(underlyingType == typeof(System.Guid))
+            if (underlyingType == typeof(System.Guid))
                 return true;
 
             var typeCode = Type.GetTypeCode(underlyingType);

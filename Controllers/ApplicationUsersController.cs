@@ -1,16 +1,9 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.OData.Results;
-using Microsoft.AspNetCore.OData.Deltas;
-
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using SimplyMTD.Data;
 using SimplyMTD.Models;
 
@@ -78,7 +71,7 @@ namespace SimplyMTD.Controllers
         partial void OnUserUpdated(ApplicationUser user);
 
         [HttpPatch("{Id}")]
-        public async Task<IActionResult> Patch(string key, [FromBody]ApplicationUser data)
+        public async Task<IActionResult> Patch(string key, [FromBody] ApplicationUser data)
         {
             var user = await userManager.FindByIdAsync(key);
 

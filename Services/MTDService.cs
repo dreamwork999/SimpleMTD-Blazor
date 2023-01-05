@@ -27,10 +27,13 @@ namespace SimplyMTD
         private readonly MTDContext context;
         private readonly NavigationManager navigationManager;
 
-        public MTDService(MTDContext context, NavigationManager navigationManager)
+        private readonly TokenProvider _store;
+
+        public MTDService(MTDContext context, NavigationManager navigationManager, TokenProvider tokenProvider)
         {
             this.context = context;
             this.navigationManager = navigationManager;
+            _store = tokenProvider;
         }
 
         public void Reset() => Context.ChangeTracker.Entries().Where(e => e.Entity != null).ToList().ForEach(e => e.State = EntityState.Detached);
@@ -50,6 +53,8 @@ namespace SimplyMTD
 
         public async Task<IQueryable<SimplyMTD.Models.MTD.Planing>> GetPlanings(Query query = null)
         {
+            var token = _store.AccessToken;
+
             var items = Context.Planings.AsQueryable();
 
             if (query != null)

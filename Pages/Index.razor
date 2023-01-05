@@ -1,32 +1,271 @@
-@page "/"
+@page "/"
+
 @attribute [Authorize]
 <PageTitle>Index</PageTitle>
-<div class="row pt-5 px-5">
-    <div class="col-12">
-        <RadzenText Text="Welcome to your new app" TextStyle="Radzen.Blazor.TextStyle.DisplayH2" TagName="Radzen.Blazor.TagName.Auto"></RadzenText>
-        <RadzenText Text="Your Success Is Our Biggest Priority" TextStyle="Radzen.Blazor.TextStyle.H4" TagName="Radzen.Blazor.TagName.H2" class="mt-5"></RadzenText>
-        <RadzenText Text="With Radzen Blazor Studio, application development is just one-click away." TextStyle="Radzen.Blazor.TextStyle.Body1" TagName="Radzen.Blazor.TagName.Auto" class="mt-4" Style="font-size: 20px; line-height: 24px"></RadzenText>
-        <RadzenText Text="Simple to setup, maintain and update." TextStyle="Radzen.Blazor.TextStyle.Body1" TagName="Radzen.Blazor.TagName.Auto" class="mt-3" Style="font-size: 20px; line-height: 24px"></RadzenText>
-        <RadzenCard Style="margin-top: 40px; padding: 20px 40px 40px;">
-            <div class="row">
-                <div class="col-12 col-md-4">
-                    <RadzenIcon Icon="smart_button" Style="margin-top: 20px; width: 48px; height: 48px; font-size: 48px; color: var(--rz-text-title-color);"></RadzenIcon>
-                    <RadzenText Text="Learn the Fundamentals" TextStyle="Radzen.Blazor.TextStyle.DisplayH6" TagName="Radzen.Blazor.TagName.H3"></RadzenText>
-                    <RadzenLink Text="Docs" Path="https://www.radzen.com/blazor-studio/documentation/" Icon="east" Target="_blank" Style="font-size: 18px"></RadzenLink>
-                    <RadzenLink Text="Videos" Path="https://youtube.com/playlist?list=PLQyJPeb3xHcBij_RbHD__2TOo8Jv5HQVc" Icon="east" Target="_blank" Style="display: block; font-size: 18px"></RadzenLink>
-                </div>
-                <div class="col-12 col-md-4">
-                    <RadzenIcon Icon="code" Style="margin-top: 20px; width: 48px; height: 48px; font-size: 48px; color: var(--rz-text-title-color);"></RadzenIcon>
-                    <RadzenText Text="Radzen Blazor Components" TextStyle="Radzen.Blazor.TextStyle.DisplayH6" TagName="Radzen.Blazor.TagName.H3"></RadzenText>
-                    <RadzenLink Text="Demos" Path="https://blazor.radzen.com" Icon="east" Target="_blank" Style="font-size: 18px"></RadzenLink>
-                </div>
-                <div class="col-12 col-md-4">
-                    <RadzenIcon Icon="people_outline" Style="margin-top: 20px; width: 48px; height: 48px; font-size: 48px; color: var(--rz-text-title-color);"></RadzenIcon>
-                    <RadzenText Text="Radzen Community" TextStyle="Radzen.Blazor.TextStyle.DisplayH6" TagName="Radzen.Blazor.TagName.H3"></RadzenText>
-                    <RadzenLink Text="Radzen Blazor Studio Forums" Path="https://forum.radzen.com/c/radzen-blazor-studio/12" Icon="east" Target="_blank" Style="font-size: 18px"></RadzenLink>
-                </div>
-            </div>
-        </RadzenCard>
-    </div>
+
+<RadzenLink Path="/Account/UserRestrictedCall" Text="Connect to HMRC"></RadzenLink>
+<div class="row pt-5 px-1">
+	<div class="col-12">
+		<RadzenDropDown @bind-Value="order.Type" Placeholder="VAT" Data="@types" TextProperty="Name" ValueProperty="Id" Name="Type">
+		</RadzenDropDown>
+		<RadzenCard Style="margin-top: 40px; padding: 20px 40px 40px;">
+			<RadzenLabel Text="ABC Cakes Limited" /><br>
+			<RadzenLabel Text="VAT Registration No.: 324 342 9901" />
+			<div>
+				<RadzenLabel Text="Tax Year" />
+				<RadzenDropDown @bind-Value="order.Country" Placeholder="2023/24" Data="@countries" TextProperty="Name" ValueProperty="Id" Name="Country">
+				</RadzenDropDown>
+				<RadzenButton Icon="line_weight" ButtonStyle="ButtonStyle.Primary" />
+				<RadzenButton Icon="description" ButtonStyle="ButtonStyle.Primary" />
+				<RadzenButton Icon="help" ButtonStyle="ButtonStyle.Primary" />
+				<RadzenButton Icon="build" ButtonStyle="ButtonStyle.Primary" />
+			</div>
+		</RadzenCard>
+	</div>
+</div>
+<div class="row pt-5 px-1">
+
+	<div class="col-md-12">
+		<RadzenPanel>
+			<HeaderTemplate>
+				<h4 class="m-0 d-flex align-items-center">
+					<RadzenIcon Icon="list" Class="me-1" /><b>Obligations</b>
+				</h4>
+			</HeaderTemplate>
+			<ChildContent>
+				@if (employees == null)
+				{
+					<p><em>Loading...</em></p>
+				}
+				else
+				{
+					<RadzenDataGrid @ref="grid" Data=@employees FilterMode="FilterMode.Simple" TItem="Employee" Class="mt-3">
+						<Columns>
+							<RadzenDataGridColumn Width="50px" TItem="Employee" Property="ID" Title="" />
+							<RadzenDataGridColumn TItem="Employee" Title="Start Date" Property="StartDate" />
+							<RadzenDataGridColumn TItem="Employee" Title="End Date" Property="EndDate" />
+							<RadzenDataGridColumn TItem="Employee" Property="Deadline" Title="Deadline" />
+							<RadzenDataGridColumn TItem="Employee" Property="SubmissionDate" Title="Submission Date" />
+							<RadzenDataGridColumn TItem="Employee" Property="Status" Title="Status" />
+							<RadzenDataGridColumn TItem="Employee" Property="Action" Title="Action">
+								<Template Context="data">
+									<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Text="@data.Action"></RadzenButton>
+								</Template>
+							</RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="Employee">
+							</RadzenDataGridColumn>
+						</Columns>
+					</RadzenDataGrid>
+				}
+			</ChildContent>
+		</RadzenPanel>
+
+	</div>
 </div>
 
+<div class="row pt-5 px-1">
+
+	<div class="col-md-6">
+		<RadzenPanel>
+			<HeaderTemplate>
+				<h4 class="m-0 d-flex align-items-center">
+					<RadzenIcon Icon="list" Class="me-1" /><b>VAT Liabilities</b>
+				</h4>
+			</HeaderTemplate>
+			<ChildContent>
+				@if (employees == null)
+				{
+					<p><em>Loading...</em></p>
+				}
+				else
+				{
+					<RadzenDataGrid @ref="grid" Data=@employees FilterMode="FilterMode.Simple" TItem="Employee" Class="mt-3">
+						<Columns>
+							<RadzenDataGridColumn TItem="Employee" Title="Start Date" Property="StartDate">
+							</RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="Employee" Property="EndDate" Title="End Date">
+							</RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="Employee" Property="Deadline" Title="Deadline" />
+							<RadzenDataGridColumn TItem="Employee" Property="Amount" Title="Amount" />
+							<RadzenDataGridColumn TItem="Employee" Property="Balance" Title="Balance" />
+						</Columns>
+					</RadzenDataGrid>
+				}
+			</ChildContent>
+		</RadzenPanel>
+
+	</div>
+	<div class="col-md-3">
+		<RadzenPanel>
+			<HeaderTemplate>
+				<h4 class="m-0 d-flex align-items-center">
+					<RadzenIcon Icon="list" Class="me-1" /><b>Payment History</b>
+				</h4>
+			</HeaderTemplate>
+			<ChildContent>
+				@if (employees == null)
+				{
+					<p><em>Loading...</em></p>
+				}
+				else
+				{
+					<RadzenDataGrid @ref="grid" Data=@employees FilterMode="FilterMode.Simple" TItem="Employee" Class="mt-3">
+						<Columns>
+							<RadzenDataGridColumn TItem="Employee" Title="Payment Date" Property="PaymentDate">
+							</RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="Employee" Property="PaymentReceived" Title="Received">
+							</RadzenDataGridColumn>
+						</Columns>
+					</RadzenDataGrid>
+				}
+			</ChildContent>
+		</RadzenPanel>
+
+	</div>
+	<div class="col-md-3">
+		<RadzenChart>
+			<RadzenPieSeries Data="@revenue" Title="Revenue" CategoryProperty="Quarter" ValueProperty="Revenue">
+				<RadzenSeriesDataLabels Visible="@showDataLabels" />
+			</RadzenPieSeries>
+		</RadzenChart>
+	</div>
+</div>
+
+@code {
+
+
+	RadzenDataGrid<Employee> grid;
+
+	public class Employee
+	{
+		public int ID { get; set; }
+		public string StartDate { get; set; }
+		public string EndDate { get; set; }
+		public string Deadline { get; set; }
+		public string SubmissionDate { get; set; }
+		public string Status { get; set; }
+		public string Action { get; set; }
+
+		public string Amount { get; set; }
+		public string Balance { get; set; }
+
+		public string PaymentDate { get; set; }
+		public string PaymentReceived { get; set; }
+	}
+
+
+	IEnumerable<Employee> employees;
+
+	protected override async Task OnInitializedAsync()
+	{
+		employees = await Task.FromResult(Enumerable.Range(1, 4).Select(i =>
+			new Employee
+				{
+					ID = i,
+					StartDate = "01-07-2018",
+					EndDate = "30-09-2018",
+
+					Deadline = "07-11-2018",
+					SubmissionDate = "",
+					Status = "Completed",
+					Action = "View",
+					Amount = "£ 1,250.00",
+					Balance = "£ 1,250.00",
+					PaymentReceived = "£ 1,250.00",
+					PaymentDate = "12-05-2018"
+				}).AsQueryable());
+	}
+
+	bool showDataLabels = true;
+
+	class DataItem
+	{
+		public string Quarter { get; set; }
+		public double Revenue { get; set; }
+	}
+
+	DataItem[] revenue = new DataItem[] {
+		new DataItem
+		{
+			Quarter = "Q1",
+			Revenue = 30000
+		},
+		new DataItem
+		{
+			Quarter = "Q2",
+			Revenue = 40000
+		},
+		new DataItem
+		{
+			Quarter = "Q3",
+			Revenue = 50000
+		},
+		new DataItem
+		{
+			Quarter = "Q4",
+			Revenue = 80000
+		},
+	};
+
+	public class Order
+	{
+		public int CardId { get; set; }
+		public string CardNr { get; set; }
+		public DateTime ExpiryDate { get; set; }
+		public string CardHolder { get; set; }
+		public string Name { get; set; }
+		public string Address1 { get; set; }
+		public string Address2 { get; set; }
+		public string City { get; set; }
+		public string State { get; set; }
+		public string Zip { get; set; }
+		public int Country { get; set; }
+		public int Type { get; set; }
+		public int StoreId { get; set; }
+		public string Warehouse { get; set; }
+		public string Region { get; set; }
+		public string System { get; set; }
+		public int TransId { get; set; }
+		public string Register { get; set; }
+		public string Clerk { get; set; }
+		public decimal Amount { get; set; }
+		public decimal Tax { get; set; }
+		public DateTime OrderDate { get; set; }
+		public DateTime ShipDate { get; set; }
+	}
+
+
+
+	public class Country
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+	}
+
+	public class Type
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+	}
+
+	Order order = new Order()
+		{
+			ExpiryDate = DateTime.Parse("10/10/2022"),
+			OrderDate = DateTime.Now,
+			ShipDate = DateTime.Now
+		};
+
+
+	List<Country> countries = new List<Country>()
+	{
+		new Country() { Id = 1, Name = "2023/24" },
+		new Country() { Id = 2, Name = "2022/23" }
+	};
+
+	List<Type> types = new List<Type>()
+	{
+		new Type() { Id = 1, Name = "VAT" },
+		new Type() { Id = 2, Name = "ITSA" }
+	};
+
+}

@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
 
@@ -63,7 +59,7 @@ namespace SimplyMTD.Pages
 
         protected async Task EditRow(DataGridRowMouseEventArgs<SimplyMTD.Models.MTD.Planing> args)
         {
-            await DialogService.OpenAsync<EditPlaning>("Edit Planing", new Dictionary<string, object> { {"id", args.Data.id} });
+            await DialogService.OpenAsync<EditPlaning>("Edit Planing", new Dictionary<string, object> { { "id", args.Data.id } });
         }
 
         protected async Task GridDeleteButtonClick(MouseEventArgs args, SimplyMTD.Models.MTD.Planing planing)
@@ -83,10 +79,10 @@ namespace SimplyMTD.Pages
             catch (Exception ex)
             {
                 NotificationService.Notify(new NotificationMessage
-                { 
+                {
                     Severity = NotificationSeverity.Error,
-                    Summary = $"Error", 
-                    Detail = $"Unable to delete Planing" 
+                    Summary = $"Error",
+                    Detail = $"Unable to delete Planing"
                 });
             }
         }
@@ -96,23 +92,23 @@ namespace SimplyMTD.Pages
             if (args?.Value == "csv")
             {
                 await MTDService.ExportPlaningsToCSV(new Query
-{ 
-    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter)? "true" : grid0.Query.Filter)}", 
-    OrderBy = $"{grid0.Query.OrderBy}", 
-    Expand = "", 
-    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible()).Select(c => c.Property))
-}, "Planings");
+                {
+                    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter) ? "true" : grid0.Query.Filter)}",
+                    OrderBy = $"{grid0.Query.OrderBy}",
+                    Expand = "",
+                    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible()).Select(c => c.Property))
+                }, "Planings");
             }
 
             if (args == null || args.Value == "xlsx")
             {
                 await MTDService.ExportPlaningsToExcel(new Query
-{ 
-    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter)? "true" : grid0.Query.Filter)}", 
-    OrderBy = $"{grid0.Query.OrderBy}", 
-    Expand = "", 
-    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible()).Select(c => c.Property))
-}, "Planings");
+                {
+                    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter) ? "true" : grid0.Query.Filter)}",
+                    OrderBy = $"{grid0.Query.OrderBy}",
+                    Expand = "",
+                    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible()).Select(c => c.Property))
+                }, "Planings");
             }
         }
     }

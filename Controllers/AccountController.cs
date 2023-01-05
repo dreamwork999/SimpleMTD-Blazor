@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using SimplyMTD.Models;
 using SendGrid.Helpers.Mail;
 using SendGrid;
+using System.Net.Http.Headers;
 
 namespace SimplyMTD.Controllers
 {
@@ -323,5 +324,33 @@ namespace SimplyMTD.Controllers
 
             await client.SendMailAsync(mailMessage);*/
         }
+
+        public async Task<IActionResult> UserRestrictedCall()
+        {
+            string accessToken = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "access_token");
+
+            if (accessToken != null)
+            {
+                return Redirect($"~/");
+                /*using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(configuration.GetValue<string>("Auth0:uri"));
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.hmrc.1.0+json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                    HttpResponseMessage response = await client.GetAsync("hello/user");
+
+                    String resp = await response.Content.ReadAsStringAsync();
+                    return Content(resp, "application/json");
+                }*/
+            }
+            else
+            {
+                return Challenge(new AuthenticationProperties() { RedirectUri = "/Account/UserRestrictedCall" }, "HMRC");
+            }
+        }
+        
+       
     }
 }

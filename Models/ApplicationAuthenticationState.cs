@@ -1,7 +1,3 @@
-
-using System;
-using System.Collections.Generic;
-
 namespace SimplyMTD.Models
 {
     public class ApplicationClaim
