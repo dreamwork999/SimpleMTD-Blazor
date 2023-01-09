@@ -1,8 +1,9 @@
-@page "/profile"
+@page "/change-password"
 @attribute [Authorize]
 
 <PageTitle>Profile</PageTitle>
 <RadzenHeading Size="H1" Text="Profile" />
+
 <div class="row">
     <div class="col-md-12">
         <RadzenTemplateForm Method="post" Submit="@FormSubmit" TItem="SimplyMTD.Models.ApplicationUser" Data="@user"

@@ -35,6 +35,11 @@ namespace SimplyMTD.Shared
             sidebarExpanded = !sidebarExpanded;
         }
 
+        protected void Home() 
+        {
+			NavigationManager.NavigateTo("/", true);
+		}
+
         protected void ProfileMenuClick(RadzenProfileMenuItem args)
         {
             if (args.Value == "Logout")

@@ -325,32 +325,36 @@ namespace SimplyMTD.Controllers
             await client.SendMailAsync(mailMessage);*/
         }
 
-        public async Task<IActionResult> UserRestrictedCall()
-        {
+        public async Task<IActionResult> UserRestrictedCall(string key, string vrn)
+        {           
+            if(key != null && vrn != null)
+            {
+				ApplicationUser user = await userManager.FindByIdAsync(key);
+
+				if (user == null)
+				{
+					return NotFound();
+				}
+
+				user.Vrn = vrn;
+				await userManager.UpdateAsync(user);
+			}
+            
+
             string accessToken = await HttpContext.GetTokenAsync(IdentityConstants.ExternalScheme, "access_token");
 
             if (accessToken != null)
             {
-                return Redirect($"~/");
-                /*using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(configuration.GetValue<string>("Auth0:uri"));
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.hmrc.1.0+json"));
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-                    HttpResponseMessage response = await client.GetAsync("hello/user");
-
-                    String resp = await response.Content.ReadAsStringAsync();
-                    return Content(resp, "application/json");
-                }*/
+                return Redirect($"~/hmrc-success");
+               
             }
             else
             {
                 return Challenge(new AuthenticationProperties() { RedirectUri = "/Account/UserRestrictedCall" }, "HMRC");
             }
         }
-        
-       
-    }
+
+
+
+	}
 }

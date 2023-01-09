@@ -1,5 +1,7 @@
+using System.Diagnostics.Metrics;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Humanizer;
@@ -10,7 +12,9 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.JSInterop;
+using Microsoft.OData;
 using Newtonsoft.Json;
 using Radzen;
 using Radzen.Blazor;
@@ -19,28 +23,31 @@ using static System.Net.WebRequestMethods;
 
 namespace SimplyMTD.Pages
 {
-    public partial class Index
-    {
+	public partial class Index
+	{
 		[Inject]
-        protected IJSRuntime JSRuntime { get; set; }
+		protected IJSRuntime JSRuntime { get; set; }
 
-        [Inject]
-        protected NavigationManager NavigationManager { get; set; }
+		[Inject]
+		protected NavigationManager UriHelper { get; set; }
 
-        [Inject]
-        protected DialogService DialogService { get; set; }
+		[Inject]
+		protected NavigationManager NavigationManager { get; set; }
 
-        [Inject]
-        protected TooltipService TooltipService { get; set; }
+		[Inject]
+		protected DialogService DialogService { get; set; }
 
-        [Inject]
-        protected ContextMenuService ContextMenuService { get; set; }
+		[Inject]
+		protected TooltipService TooltipService { get; set; }
 
-        [Inject]
-        protected NotificationService NotificationService { get; set; }
+		[Inject]
+		protected ContextMenuService ContextMenuService { get; set; }
 
-        [Inject]
-        protected SecurityService Security { get; set; }
+		[Inject]
+		protected NotificationService NotificationService { get; set; }
+
+		[Inject]
+		protected SecurityService Security { get; set; }
 
 		[Inject]
 		public VATService VATService { get; set; }
@@ -54,25 +61,97 @@ namespace SimplyMTD.Pages
 
 		protected override async Task OnInitializedAsync()
 		{
+			bool res = await VATService.HmrcAsync();
+			if (res)
+			{
+				await Load();
+			}
+			else
+			{
+				UriHelper.NavigateTo("hmrc", true);
+			}
+
+		}
+
+		protected async System.Threading.Tasks.Task Load()
+		{
 			obligations = await VATService.GetObligations();
 		}
 
-		async Task Submit(MouseEventArgs args, string periodKey)
-        {
-			var confirmationResult = await this.DialogService.Confirm("How would you like to provide your VAT information?", "Dialog Title", new ConfirmOptions { OkButtonText = "EXCEL BRIDGING", CancelButtonText = "ACCOUNTING RECORDS" });
+		async Task Submit(MouseEventArgs args, string periodKey, string start, string end)
+		{
+			var confirmationResult = await this.DialogService.Confirm("How would you like to provide your VAT information?", "", new ConfirmOptions { OkButtonText = "EXCEL BRIDGING", CancelButtonText = "ACCOUNTING RECORDS" });
 			if (confirmationResult == true) // excel bridging
 			{
-                NavigationManager.NavigateTo("/excel/"+periodKey);
+				NavigationManager.NavigateTo("/excel/" + periodKey + "/" + start + "/" + end);
 
-            } else // accounting records
-            {
+			}
+			else // accounting records
+			{
 
-            }
+			}
 		}
 
 		protected async System.Threading.Tasks.Task Button0Click(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
-        {
-            NavigationManager.NavigateTo("/Account/UserRestrictedCall");
-        }
-    }
+		{
+			NavigationManager.NavigateTo("/Account/UserRestrictedCall");
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+
+		bool showDataLabels = true;
+
+		class DataItem
+		{
+			public string Quarter { get; set; }
+			public double Revenue { get; set; }
+		}
+
+		DataItem[] revenue = new DataItem[] {
+			new DataItem
+			{
+				Quarter = "Q1",
+				Revenue = 30000
+				},
+			new DataItem
+			{
+				Quarter = "Q2",
+				Revenue = 40000
+			},
+			new DataItem
+			{
+				Quarter = "Q3",
+				Revenue = 50000
+			},
+			new DataItem
+			{
+				Quarter = "Q4",
+				Revenue = 80000
+			},
+		};
+
+		public class Test
+		{
+			public int TaxYear { get; set; }
+		}
+
+		Test test = new Test()
+		{
+			
+		};
+
+		public class TaxYear
+		{
+			public int Id { get; set; }
+			public string Name { get; set; }
+		}
+
+		List<TaxYear> taxYears = new List<TaxYear>()
+		{
+		new TaxYear() { Id = 1, Name = "2023/24" },
+		new TaxYear() { Id = 2, Name = "2022/23" }
+		};
+	}
 }

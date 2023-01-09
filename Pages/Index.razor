@@ -1,10 +1,28 @@
-@page "/"
+@page "/dashboard"
 @using SimplyMTD.Models;
-
 @attribute [Authorize]
-<PageTitle>Index</PageTitle>
 
-<RadzenLink Path="/Account/UserRestrictedCall" Text="Connect to HMRC"></RadzenLink>
+<style>
+	button {
+		margin-left: 10px;
+	}
+</style>
+<PageTitle>Index</PageTitle>
+<div class="row pt-5 px-1">
+	<div class="col-md-6">
+		<RadzenText TextStyle="TextStyle.Body1"><b>@(Security.User.BusinessName)</b></RadzenText>
+		<RadzenText TextStyle="TextStyle.Body1">VAT Registration No: @(Security.User.Vrn)</RadzenText>
+	</div>
+	<div class="col-md-6  d-flex align-items-center justify-content-end">
+		<RadzenLabel Text="Tax Year" Style="margin-right: 10px" />
+		<RadzenDropDown @bind-Value="test.TaxYear" Placeholder="2023/24" Data="@taxYears" TextProperty="Name" ValueProperty="Id" Name="TaxYear" Style="margin-right: 30px">
+		</RadzenDropDown>
+		<RadzenButton Icon="line_weight" ButtonStyle="ButtonStyle.Primary" />
+		<RadzenButton Icon="description" ButtonStyle="ButtonStyle.Primary" />
+		<RadzenButton Icon="help" ButtonStyle="ButtonStyle.Primary" />
+		<RadzenButton Icon="build" ButtonStyle="ButtonStyle.Primary" />
+	</div>
+</div>
 @*<div class="row pt-5 px-1">
 	<div class="col-12">
 		<RadzenDropDown @bind-Value="order.Type" Placeholder="VAT" Data="@types" TextProperty="Name" ValueProperty="Id" Name="Type">
@@ -42,7 +60,6 @@
 				{
 					<RadzenDataGrid @ref="grid" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
 						<Columns>
-							<RadzenDataGridColumn Width="50px" TItem="Obligation" Property="periodKey" Title="Period Key" />
 							<RadzenDataGridColumn TItem="Obligation" Property="start" Title="Start Date" />
 							<RadzenDataGridColumn TItem="Obligation" Property="end" Title="End Date" />
 							<RadzenDataGridColumn TItem="Obligation" Property="due" Title="Deadline" />
@@ -51,11 +68,11 @@
 								<Template Context="obligation">
 									@if (obligation.status == "O")
 									{
-										<div class="rz-background-color-warning-lighter"><span class="rz-color-warning-dark">Due</span></div>
+										<span class="rz-color-warning-dark">Due</span>
 									}
 									else
 									{
-										<div class="rz-background-color-success-lighter"><span class="rz-color-success-dark">Completed</span></div>
+										<span class="rz-color-success-dark">Completed</span>
 									}
 								</Template>
 							</RadzenDataGridColumn>
@@ -63,7 +80,7 @@
 								<Template Context="obligation">
 									@if (obligation.status == "O")
 									{
-										<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Text="Submit" Click=@(args => Submit(args, obligation.periodKey)) />
+										<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Text="Submit" Click=@(args => Submit(args, obligation.periodKey, obligation.start, obligation.end)) />
 									}
 									else
 									{
@@ -73,6 +90,9 @@
 								</Template>
 							</RadzenDataGridColumn>
 							<RadzenDataGridColumn TItem="Obligation">
+								<Template Context="obligation">
+									<RadzenCheckBox Name="@obligation.periodKey" TValue="bool" />
+								</Template>
 							</RadzenDataGridColumn>
 						</Columns>
 					</RadzenDataGrid>
@@ -82,7 +102,69 @@
 
 	</div>
 </div>
+<div class="row pt-5 px-1">
+	<div class="col-md-6">
+		<RadzenPanel>
+			<HeaderTemplate>
+				<h4 class="m-0 d-flex align-items-center">
+					<RadzenIcon Icon="list" Class="me-1" /><b>VAT Liabilities</b>
+				</h4>
+			</HeaderTemplate>
+			<ChildContent>
+				@if (obligations == null)
+				{
+					<p><em>Loading...</em></p>
+				}
+				else
+				{
+					<RadzenDataGrid @ref="grid" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
+						<Columns>
+							<RadzenDataGridColumn TItem="Obligation" Property="start" Title="Start Date" />
+							<RadzenDataGridColumn TItem="Obligation" Property="end" Title="End Date" />
+							<RadzenDataGridColumn TItem="Obligation" Property="due" Title="Due Date" />
+							<RadzenDataGridColumn TItem="Obligation" Title="Amount" />
+							<RadzenDataGridColumn TItem="Obligation" Title="Balance" />
+						</Columns>
+					</RadzenDataGrid>
+				}
+			</ChildContent>
+		</RadzenPanel>
 
+	</div>
+	<div class="col-md-3">
+		<RadzenPanel>
+			<HeaderTemplate>
+				<h4 class="m-0 d-flex align-items-center">
+					<RadzenIcon Icon="list" Class="me-1" /><b>Payment History</b>
+				</h4>
+			</HeaderTemplate>
+			<ChildContent>
+				@if (obligations == null)
+				{
+					<p><em>Loading...</em></p>
+				}
+				else
+				{
+					<RadzenDataGrid @ref="grid" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
+						<Columns>
+							<RadzenDataGridColumn TItem="Obligation" Title="Amount" />
+							<RadzenDataGridColumn TItem="Obligation" Property="due" Title="Received" />
+
+						</Columns>
+					</RadzenDataGrid>
+				}
+			</ChildContent>
+		</RadzenPanel>
+
+	</div>
+	<div class="col-md-3">
+		<RadzenChart>
+			<RadzenPieSeries Data="@revenue" Title="Revenue" CategoryProperty="Quarter" ValueProperty="Revenue">
+				<RadzenSeriesDataLabels Visible="@showDataLabels" />
+			</RadzenPieSeries>
+		</RadzenChart>
+	</div>
+</div>
 @*<div class="row pt-5 px-1">
 
 	<div class="col-md-6">

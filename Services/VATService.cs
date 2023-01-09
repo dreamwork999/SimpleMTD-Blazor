@@ -13,8 +13,19 @@ namespace SimplyMTD
 		private readonly TokenProvider _store;
 		private readonly string token;
 
+        public async Task<bool> HmrcAsync()
+        {
+            if (this.token != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-		public VATService(TokenProvider tokenProvider, IConfiguration configuration)
+        public VATService(TokenProvider tokenProvider, IConfiguration configuration)
 		{
 			this._store = tokenProvider;
 			this.configuration = configuration;
@@ -23,7 +34,7 @@ namespace SimplyMTD
 
 		public async Task<List<Obligation>> GetObligations()
 		{
-			var token = "4ed2d6b66ac631b37c80501b1e01acf1"; // Todo
+			var token = this.token; // Todo
 
 			using (var client = new HttpClient())
 			{
@@ -42,7 +53,7 @@ namespace SimplyMTD
 
 		public async Task<bool> submitVAT(VATReturn vatReturn)
 		{
-            var token = "4ed2d6b66ac631b37c80501b1e01acf1"; // Todo
+            var token = this.token; // Todo
 			 
             using (var client = new HttpClient())
             {
