@@ -1,4 +1,8 @@
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Text;
 
 namespace SimplyMTD.Controllers
 {
@@ -18,7 +22,41 @@ namespace SimplyMTD.Controllers
             try
             {
                 // Put your code here
-                return StatusCode(200);
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                var fullFileName = Path.Combine(environment.WebRootPath, fileName);
+                using (var stream = new FileStream(fullFileName, FileMode.Create))
+                {
+                    // Save the file
+                    file.CopyTo(stream);
+                }
+
+                List<string> amounts = new List<string>();
+
+                using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(fullFileName, false))
+                {
+                    WorkbookPart workbookPart = spreadsheetDocument.WorkbookPart;
+                    WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                    SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+                    string text;
+                    foreach (Row r in sheetData.Elements<Row>())
+                    {
+                        string xxx = r.Elements<Cell>().ElementAt(1).CellValue.Text;
+                        amounts.Add(xxx);
+                        foreach (Cell c in r.Elements<Cell>())
+                        {
+                            text = c.CellValue.Text;
+                            Console.Write(text + " ");
+                        }
+                    }
+                    /*Console.WriteLine();
+                    Console.ReadKey();*/
+                }
+                // Delete file
+                System.IO.File.Delete(fullFileName);
+
+                return Ok(amounts);
+
+                //return StatusCode(200);
             }
             catch (Exception ex)
             {

@@ -1,10 +1,11 @@
 @page "/"
+@using SimplyMTD.Models;
 
 @attribute [Authorize]
 <PageTitle>Index</PageTitle>
 
 <RadzenLink Path="/Account/UserRestrictedCall" Text="Connect to HMRC"></RadzenLink>
-<div class="row pt-5 px-1">
+@*<div class="row pt-5 px-1">
 	<div class="col-12">
 		<RadzenDropDown @bind-Value="order.Type" Placeholder="VAT" Data="@types" TextProperty="Name" ValueProperty="Id" Name="Type">
 		</RadzenDropDown>
@@ -22,7 +23,7 @@
 			</div>
 		</RadzenCard>
 	</div>
-</div>
+</div>*@
 <div class="row pt-5 px-1">
 
 	<div class="col-md-12">
@@ -33,26 +34,45 @@
 				</h4>
 			</HeaderTemplate>
 			<ChildContent>
-				@if (employees == null)
+				@if (obligations == null)
 				{
 					<p><em>Loading...</em></p>
 				}
 				else
 				{
-					<RadzenDataGrid @ref="grid" Data=@employees FilterMode="FilterMode.Simple" TItem="Employee" Class="mt-3">
+					<RadzenDataGrid @ref="grid" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
 						<Columns>
-							<RadzenDataGridColumn Width="50px" TItem="Employee" Property="ID" Title="" />
-							<RadzenDataGridColumn TItem="Employee" Title="Start Date" Property="StartDate" />
-							<RadzenDataGridColumn TItem="Employee" Title="End Date" Property="EndDate" />
-							<RadzenDataGridColumn TItem="Employee" Property="Deadline" Title="Deadline" />
-							<RadzenDataGridColumn TItem="Employee" Property="SubmissionDate" Title="Submission Date" />
-							<RadzenDataGridColumn TItem="Employee" Property="Status" Title="Status" />
-							<RadzenDataGridColumn TItem="Employee" Property="Action" Title="Action">
-								<Template Context="data">
-									<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Icon="info" Text="@data.Action"></RadzenButton>
+							<RadzenDataGridColumn Width="50px" TItem="Obligation" Property="periodKey" Title="Period Key" />
+							<RadzenDataGridColumn TItem="Obligation" Property="start" Title="Start Date" />
+							<RadzenDataGridColumn TItem="Obligation" Property="end" Title="End Date" />
+							<RadzenDataGridColumn TItem="Obligation" Property="due" Title="Deadline" />
+							<RadzenDataGridColumn TItem="Obligation" Property="received" Title="Submission Date" />
+							<RadzenDataGridColumn TItem="Obligation" Property="status" Title="Status">
+								<Template Context="obligation">
+									@if (obligation.status == "O")
+									{
+										<div class="rz-background-color-warning-lighter"><span class="rz-color-warning-dark">Due</span></div>
+									}
+									else
+									{
+										<div class="rz-background-color-success-lighter"><span class="rz-color-success-dark">Completed</span></div>
+									}
 								</Template>
 							</RadzenDataGridColumn>
-							<RadzenDataGridColumn TItem="Employee">
+							<RadzenDataGridColumn TItem="Obligation" Title="Action">
+								<Template Context="obligation">
+									@if (obligation.status == "O")
+									{
+										<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Text="Submit" Click=@(args => Submit(args, obligation.periodKey)) />
+									}
+									else
+									{
+										<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Text="View" />
+									}
+
+								</Template>
+							</RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="Obligation">
 							</RadzenDataGridColumn>
 						</Columns>
 					</RadzenDataGrid>
@@ -63,7 +83,7 @@
 	</div>
 </div>
 
-<div class="row pt-5 px-1">
+@*<div class="row pt-5 px-1">
 
 	<div class="col-md-6">
 		<RadzenPanel>
@@ -129,118 +149,10 @@
 			</RadzenPieSeries>
 		</RadzenChart>
 	</div>
-</div>
+</div>*@
 
 @code {
-
-
-	RadzenDataGrid<Employee> grid;
-
-	public class Employee
-	{
-		public int ID { get; set; }
-		public string StartDate { get; set; }
-		public string EndDate { get; set; }
-		public string Deadline { get; set; }
-		public string SubmissionDate { get; set; }
-		public string Status { get; set; }
-		public string Action { get; set; }
-
-		public string Amount { get; set; }
-		public string Balance { get; set; }
-
-		public string PaymentDate { get; set; }
-		public string PaymentReceived { get; set; }
-	}
-
-
-	IEnumerable<Employee> employees;
-
-	protected override async Task OnInitializedAsync()
-	{
-		employees = await Task.FromResult(Enumerable.Range(1, 4).Select(i =>
-			new Employee
-				{
-					ID = i,
-					StartDate = "01-07-2018",
-					EndDate = "30-09-2018",
-
-					Deadline = "07-11-2018",
-					SubmissionDate = "",
-					Status = "Completed",
-					Action = "View",
-					Amount = "£ 1,250.00",
-					Balance = "£ 1,250.00",
-					PaymentReceived = "£ 1,250.00",
-					PaymentDate = "12-05-2018"
-				}).AsQueryable());
-	}
-
-	bool showDataLabels = true;
-
-	class DataItem
-	{
-		public string Quarter { get; set; }
-		public double Revenue { get; set; }
-	}
-
-	DataItem[] revenue = new DataItem[] {
-		new DataItem
-		{
-			Quarter = "Q1",
-			Revenue = 30000
-		},
-		new DataItem
-		{
-			Quarter = "Q2",
-			Revenue = 40000
-		},
-		new DataItem
-		{
-			Quarter = "Q3",
-			Revenue = 50000
-		},
-		new DataItem
-		{
-			Quarter = "Q4",
-			Revenue = 80000
-		},
-	};
-
-	public class Order
-	{
-		public int CardId { get; set; }
-		public string CardNr { get; set; }
-		public DateTime ExpiryDate { get; set; }
-		public string CardHolder { get; set; }
-		public string Name { get; set; }
-		public string Address1 { get; set; }
-		public string Address2 { get; set; }
-		public string City { get; set; }
-		public string State { get; set; }
-		public string Zip { get; set; }
-		public int Country { get; set; }
-		public int Type { get; set; }
-		public int StoreId { get; set; }
-		public string Warehouse { get; set; }
-		public string Region { get; set; }
-		public string System { get; set; }
-		public int TransId { get; set; }
-		public string Register { get; set; }
-		public string Clerk { get; set; }
-		public decimal Amount { get; set; }
-		public decimal Tax { get; set; }
-		public DateTime OrderDate { get; set; }
-		public DateTime ShipDate { get; set; }
-	}
-
-
-
-	public class Country
-	{
-		public int Id { get; set; }
-		public string Name { get; set; }
-	}
+	
 
 	public class Type
 	{
@@ -248,19 +160,7 @@
 		public string Name { get; set; }
 	}
 
-	Order order = new Order()
-		{
-			ExpiryDate = DateTime.Parse("10/10/2022"),
-			OrderDate = DateTime.Now,
-			ShipDate = DateTime.Now
-		};
-
-
-	List<Country> countries = new List<Country>()
-	{
-		new Country() { Id = 1, Name = "2023/24" },
-		new Country() { Id = 2, Name = "2022/23" }
-	};
+	
 
 	List<Type> types = new List<Type>()
 	{

@@ -24,6 +24,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<SimplyMTD.MTDService>();
+builder.Services.AddScoped<SimplyMTD.VATService>();
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddDbContext<SimplyMTD.Data.MTDContext>(options =>
 {

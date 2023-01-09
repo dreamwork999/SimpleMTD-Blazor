@@ -1,0 +1,152 @@
+@page "/excel/{periodKey}"
+@using Newtonsoft.Json;
+@using SimplyMTD.Models;
+<style>
+	form .row {
+		margin-bottom: 16px;
+	}
+</style>
+@attribute [Authorize]
+<PageTitle>Upload Excel</PageTitle>
+<RadzenCard Class="m-3">
+    <div class="row">
+        <div class="col-md-12">
+            <RadzenText TextStyle="TextStyle.Body1">ABC Cakes Limited</RadzenText>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <RadzenText TextStyle="TextStyle.Body1">VAT RegistrationNo</RadzenText>
+        </div>
+        <div class="col-md-6">
+            <RadzenText TextStyle="TextStyle.Body1">324 342 9901</RadzenText>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <RadzenText TextStyle="TextStyle.Body1">Submission Period: </RadzenText>
+        </div>
+        <div class="col-md-6">
+            <RadzenText TextStyle="TextStyle.Body1">324 342 9901</RadzenText>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <RadzenText TextStyle="TextStyle.Body1">VAT Scheme</RadzenText>
+        </div>
+        <div class="col-md-6">
+            <RadzenText TextStyle="TextStyle.Body1">324 342 9901</RadzenText>
+        </div>
+    </div>
+</RadzenCard>
+<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Using RadzenProgressBar</RadzenText>
+<RadzenUpload Url="upload/single" Progress=@TrackProgress Complete=@OnComplete class="w-100" />
+<RadzenProgressBar Value=@progress class="mt-4" Visible=@showProgress />
+<RadzenButton Text="Cancel" Click=@(args => CancelUpload()) class="d-block mt-4" Visible=@showProgress />
+<RadzenLabel Visible=@showComplete class="mt-4" Text=@completionMessage />
+
+<RadzenTemplateForm TItem="SimplyMTD.Models.VATReturn" Data="@vatReturn" Submit="@FormSubmit">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<RadzenFieldset Text="Purchase Info">
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 1" />
+							<RadzenLabel Text="VAT due in this period on sales and other outputs" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="vatDueSales" @bind-Value="@(vatReturn.vatDueSales)" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 2" />
+							<RadzenLabel Text="VAT due in the period on acquisitions of goods made in Northern Ireland from EU Member States" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="totalVatDue" @bind-Value="@(vatReturn.vatDueAcquisitions)" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 3" />
+							<RadzenLabel Text="VAT due in the period on acquisitions of goods made in Northern Ireland from EU Member States" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="totalVatDue" @bind-Value="@(vatReturn.totalVatDue)" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 4" />
+							<RadzenLabel Text="Total VAT due (the sum of boxes 1 and 2)" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="vatReclaimedCurrPeriod" @bind-Value="@(vatReturn.vatReclaimedCurrPeriod)" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 5" />
+							<RadzenLabel Text="VAT reclaimed in the period on purchases and other inputs (incl. acquisitions in Northern Ireland from EU Member States)" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="netVatDue" @bind-Value="@(vatReturn.netVatDue)" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 6" />
+							<RadzenLabel Text="Net VAT to be paid to HMRC or reclaimed by you (Difference between boxes 3 and 4)" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="totalValueSalesExVAT" @bind-Value="@(vatReturn.totalValueSalesExVAT)" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 7" />
+							<RadzenLabel Text="Total value of sales and all other outputs excluding any VAT. Include your box 8 figure" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="totalValuePurchasesExVAT" @bind-Value="@(vatReturn.totalValuePurchasesExVAT)" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 8" />
+							<RadzenLabel Text="Total value of purchases and all other inputs excluding any VAT. Include your box 9 figure" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="totalValueGoodsSuppliedExVAT" @bind-Value="@(vatReturn.totalValueGoodsSuppliedExVAT)" />
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-10 align-items-center d-flex">
+							<RadzenLabel Text="Box 9" />
+							<RadzenLabel Text="Total value of dispatches of goods and related costs (excluding VAT) from Northern Ireland to EU Member States" />
+						</div>
+						<div class="col-md-2">
+							<RadzenNumeric style="width: 100%;" Name="totalAcquisitionsExVAT" @bind-Value="@(vatReturn.totalAcquisitionsExVAT)" />
+						</div>
+					</div>
+
+				</RadzenFieldset>
+				<div class="row">
+					<div class="col-md-12">
+						<RadzenLabel Text="When you submit this VAT information you are making a legal declaration that the information is true and complete. A false declaration can result in prosecution." />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+				<RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="SAVE FOR LATER" Click="@Cancel" />
+                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Submit" />
+            </div>
+		</div>
+	</div>
+</RadzenTemplateForm>
+
