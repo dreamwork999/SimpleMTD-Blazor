@@ -46,10 +46,6 @@ namespace SimplyMTD.Pages
 
 		RadzenUpload upload;
 
-		int progress;
-		bool showProgress;
-
-
 		void OnProgress(UploadProgressArgs args, string name)
 		{
 			Console.WriteLine(name);
@@ -90,10 +86,10 @@ namespace SimplyMTD.Pages
 			bool res = await VATService.submitVAT(vatReturn);
 			if(res)
 			{
-				ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Success Summary", Detail = "Success Detail", Duration = 4000 });
+				ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Success Summary", Detail = "", Duration = 4000 });
 			} else
 			{
-				ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error Summary", Detail = "Error Detail", Duration = 4000 });
+				ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error Summary", Detail = "", Duration = 4000 });
 			}
 		}
 

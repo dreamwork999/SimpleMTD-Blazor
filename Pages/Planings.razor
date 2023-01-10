@@ -1,7 +1,5 @@
 @page "/planings"
 
-@attribute [Authorize]
-
 <PageTitle>Planings</PageTitle>
 <div class="row" style="margin-bottom: 1rem">
     <div class="col-12 col-md-6">
@@ -25,7 +23,9 @@
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"  AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true"
             Data="@planings"    TItem="SimplyMTD.Models.MTD.Planing" RowDoubleClick="@EditRow" >
             <Columns>
-                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Planing" Property="id" Title="id">
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Planing" Property="Id" Title="Id">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Planing" Property="Title" Title="Title">
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Planing" Filterable="false" Sortable="false" Width="70px" TextAlign="TextAlign.Center">
                     <Template Context="planing">

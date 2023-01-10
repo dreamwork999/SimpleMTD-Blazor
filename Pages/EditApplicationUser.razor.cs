@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.JSInterop;
 using Radzen;
 
@@ -49,6 +50,8 @@ namespace SimplyMTD.Pages
         {
             try
             {
+                string test = user.Email;
+                
                 user.Roles = roles.Where(role => userRoles.Contains(role.Id)).ToList();
                 await Security.UpdateUser($"{Id}", user);
                 DialogService.Close(null);

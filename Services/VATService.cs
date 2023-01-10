@@ -29,7 +29,8 @@ namespace SimplyMTD
 		{
 			this._store = tokenProvider;
 			this.configuration = configuration;
-			this.token = _store.AccessToken;
+			//this.token = _store.AccessToken;
+			this.token = "d2b8db8598ad28b98ab08ba74e2c04d5";
 		}
 
 		public async Task<List<Obligation>> GetObligations()
@@ -48,6 +49,46 @@ namespace SimplyMTD
 				String resp = await response.Content.ReadAsStringAsync();
 				ObligationBody obligationBody = JsonConvert.DeserializeObject<ObligationBody>(resp);
 				return obligationBody.obligations;
+			}
+		}
+
+		public async Task<List<Liability>> GetLiabilities()
+		{
+			var token = this.token; // Todo
+
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = new Uri(configuration.GetValue<string>("Auth0:uri"));
+				client.DefaultRequestHeaders.Accept.Clear();
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.hmrc.1.0+json"));
+				client.DefaultRequestHeaders.Add("Gov-Test-Scenario", "MULTIPLE_LIABILITIES");
+				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+				HttpResponseMessage response = await client.GetAsync("organisations/vat/423439757/liabilities?from=2023-01-01&to=2023-01-04");
+
+				String resp = await response.Content.ReadAsStringAsync();
+				LiabilityContainer liabilityContainer = JsonConvert.DeserializeObject<LiabilityContainer>(resp);
+				return liabilityContainer.liabilities;
+			}
+		}
+
+		public async Task<List<Payment>> GetPayments()
+		{
+			var token = this.token; // Todo
+
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = new Uri(configuration.GetValue<string>("Auth0:uri"));
+				client.DefaultRequestHeaders.Accept.Clear();
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.hmrc.1.0+json"));
+				client.DefaultRequestHeaders.Add("Gov-Test-Scenario", "MULTIPLE_PAYMENTS");
+				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+				HttpResponseMessage response = await client.GetAsync("organisations/vat/423439757/payments?from=2017-01-25&to=2017-06-25");
+
+				String resp = await response.Content.ReadAsStringAsync();
+				PaymentContainer paymentContainer = JsonConvert.DeserializeObject<PaymentContainer>(resp);
+				return paymentContainer.payments;
 			}
 		}
 

@@ -52,9 +52,6 @@
 			<RadzenUpload @ref="upload" Auto="false" Url="upload/single" Change=@(args => OnChange(args, "Manual Upload"))
 					  Progress=@(args => OnProgress(args, "Manual Upload")) Complete=@OnComplete class="w-100" />
 			<RadzenButton Text="Upload" Click=@(args => upload.Upload()) class="d-block mt-4" />
-
-		@*<RadzenUpload Url="upload/single" Complete=@OnComplete class="w-100" />
-		<RadzenProgressBar Value=@progress class="mt-4" Visible=@showProgress />*@
 	</RadzenCard>
 	
 

@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Radzen;
 
 using SimplyMTD.Data;
+using SimplyMTD.Models.MTD;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 namespace SimplyMTD
 {
@@ -27,13 +29,10 @@ namespace SimplyMTD
         private readonly MTDContext context;
         private readonly NavigationManager navigationManager;
 
-        private readonly TokenProvider _store;
-
-        public MTDService(MTDContext context, NavigationManager navigationManager, TokenProvider tokenProvider)
+        public MTDService(MTDContext context, NavigationManager navigationManager)
         {
             this.context = context;
             this.navigationManager = navigationManager;
-            _store = tokenProvider;
         }
 
         public void Reset() => Context.ChangeTracker.Entries().Where(e => e.Entity != null).ToList().ForEach(e => e.State = EntityState.Detached);
@@ -53,8 +52,6 @@ namespace SimplyMTD
 
         public async Task<IQueryable<SimplyMTD.Models.MTD.Planing>> GetPlanings(Query query = null)
         {
-            var token = _store.AccessToken;
-
             var items = Context.Planings.AsQueryable();
 
             if (query != null)
@@ -107,7 +104,7 @@ namespace SimplyMTD
         {
             var items = Context.Planings
                               .AsNoTracking()
-                              .Where(i => i.id == id);
+                              .Where(i => i.Id == id);
 
   
             var itemToReturn = items.FirstOrDefault();
@@ -117,7 +114,8 @@ namespace SimplyMTD
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnPlaningCreated(SimplyMTD.Models.MTD.Planing item);
+		partial void OnPlaningCreated(SimplyMTD.Models.MTD.Planing item);
+
         partial void OnAfterPlaningCreated(SimplyMTD.Models.MTD.Planing item);
 
         public async Task<SimplyMTD.Models.MTD.Planing> CreatePlaning(SimplyMTD.Models.MTD.Planing planing)
@@ -125,7 +123,7 @@ namespace SimplyMTD
             OnPlaningCreated(planing);
 
             var existingItem = Context.Planings
-                              .Where(i => i.id == planing.id)
+                              .Where(i => i.Id == planing.Id)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -149,7 +147,7 @@ namespace SimplyMTD
             return planing;
         }
 
-        public async Task<SimplyMTD.Models.MTD.Planing> CancelPlaningChanges(SimplyMTD.Models.MTD.Planing item)
+		public async Task<SimplyMTD.Models.MTD.Planing> CancelPlaningChanges(SimplyMTD.Models.MTD.Planing item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -169,7 +167,7 @@ namespace SimplyMTD
             OnPlaningUpdated(planing);
 
             var itemToUpdate = Context.Planings
-                              .Where(i => i.id == planing.id)
+                              .Where(i => i.Id == planing.Id)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -188,13 +186,13 @@ namespace SimplyMTD
             return planing;
         }
 
-        partial void OnPlaningDeleted(SimplyMTD.Models.MTD.Planing item);
+		partial void OnPlaningDeleted(SimplyMTD.Models.MTD.Planing item);
         partial void OnAfterPlaningDeleted(SimplyMTD.Models.MTD.Planing item);
 
         public async Task<SimplyMTD.Models.MTD.Planing> DeletePlaning(string id)
         {
             var itemToDelete = Context.Planings
-                              .Where(i => i.id == id)
+                              .Where(i => i.Id == id)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -221,5 +219,141 @@ namespace SimplyMTD
 
             return itemToDelete;
         }
-        }
+
+
+		partial void OnBillingGet(SimplyMTD.Models.MTD.Billing item);
+
+		public async Task<SimplyMTD.Models.MTD.Billing> GetBillingByUserId(string userId)
+		{
+			var items = Context.Billings
+							  .AsNoTracking()
+							  .Where(i => i.UserId == userId);
+
+
+			var itemToReturn = items.FirstOrDefault();
+
+			OnBillingGet(itemToReturn);
+
+			return await Task.FromResult(itemToReturn);
+		}
+
+		partial void OnBillingUpdated(SimplyMTD.Models.MTD.Billing item);
+		partial void OnAfterBillingUpdated(SimplyMTD.Models.MTD.Billing item);
+
+		public async Task<SimplyMTD.Models.MTD.Billing> UpdateBilling(string id, SimplyMTD.Models.MTD.Billing billing)
+		{
+			OnBillingUpdated(billing);
+
+			var itemToUpdate = Context.Billings
+							  .Where(i => i.Id == billing.Id)
+							  .FirstOrDefault();
+
+			if (itemToUpdate == null)
+			{
+				throw new Exception("Item no longer available");
+			}
+
+			var entryToUpdate = Context.Entry(itemToUpdate);
+			entryToUpdate.CurrentValues.SetValues(billing);
+			entryToUpdate.State = EntityState.Modified;
+
+			Context.SaveChanges();
+
+			OnAfterBillingUpdated(billing);
+
+			return billing;
+		}
+
+
+		partial void OnAccountingGet(SimplyMTD.Models.MTD.Accounting item);
+
+		public async Task<SimplyMTD.Models.MTD.Accounting> GetAccountingByUserId(string userId)
+		{
+			var items = Context.Accountings
+							  .AsNoTracking()
+							  .Where(i => i.UserId == userId);
+
+
+			var itemToReturn = items.FirstOrDefault();
+
+			OnAccountingGet(itemToReturn);
+
+			return await Task.FromResult(itemToReturn);
+		}
+
+		partial void OnAccountingUpdated(SimplyMTD.Models.MTD.Accounting item);
+		partial void OnAfterAccountingUpdated(SimplyMTD.Models.MTD.Accounting item);
+
+		public async Task<SimplyMTD.Models.MTD.Accounting> UpdateAccounting(string id, SimplyMTD.Models.MTD.Accounting accounting)
+		{
+			OnAccountingUpdated(accounting);
+
+			var itemToUpdate = Context.Accountings
+							  .Where(i => i.Id == accounting.Id)
+							  .FirstOrDefault();
+
+			if (itemToUpdate == null)
+			{
+				throw new Exception("Item no longer available");
+			}
+
+			var entryToUpdate = Context.Entry(itemToUpdate);
+			entryToUpdate.CurrentValues.SetValues(accounting);
+			entryToUpdate.State = EntityState.Modified;
+
+			Context.SaveChanges();
+
+			OnAfterAccountingUpdated(accounting);
+
+			return accounting;
+		}
+
+
+
+
+
+
+		partial void OnAccountantGet(SimplyMTD.Models.MTD.Accountant item);
+
+		public async Task<SimplyMTD.Models.MTD.Accountant> GetAccountantByUserId(string userId)
+		{
+			var items = Context.Accountants
+							  .AsNoTracking()
+							  .Where(i => i.UserId == userId);
+
+
+			var itemToReturn = items.FirstOrDefault();
+
+			OnAccountantGet(itemToReturn);
+
+			return await Task.FromResult(itemToReturn);
+		}
+
+		partial void OnAccountantUpdated(SimplyMTD.Models.MTD.Accountant item);
+		partial void OnAfterAccountingUpdated(SimplyMTD.Models.MTD.Accountant item);
+
+		public async Task<SimplyMTD.Models.MTD.Accountant> UpdateAccountant(string id, SimplyMTD.Models.MTD.Accountant accountant)
+		{
+			OnAccountantUpdated(accountant);
+
+			var itemToUpdate = Context.Accountants
+							  .Where(i => i.Id == accountant.Id)
+							  .FirstOrDefault();
+
+			if (itemToUpdate == null)
+			{
+				throw new Exception("Item no longer available");
+			}
+
+			var entryToUpdate = Context.Entry(itemToUpdate);
+			entryToUpdate.CurrentValues.SetValues(accountant);
+			entryToUpdate.State = EntityState.Modified;
+
+			Context.SaveChanges();
+
+			OnAfterAccountingUpdated(accountant);
+
+			return accountant;
+		}
+	}
 }

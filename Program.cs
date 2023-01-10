@@ -28,68 +28,61 @@ builder.Services.AddScoped<SimplyMTD.VATService>();
 builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddDbContext<SimplyMTD.Data.MTDContext>(options =>
 {
-	options.UseSqlServer(builder.Configuration.GetConnectionString("MTDConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MTDConnection"));
 });
 builder.Services.AddHttpClient("SimplyMTD").AddHeaderPropagation(o => o.Headers.Add("Cookie"));
 builder.Services.AddHeaderPropagation(o => o.Headers.Add("Cookie"));
-
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-	options.CheckConsentNeeded = context => true;
-	options.MinimumSameSitePolicy = SameSiteMode.Lax;
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
 });
-
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromSeconds(100);
-	//options.Cookie.HttpOnly = true;
-	options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromSeconds(100);
+    //options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
-
 builder.Services.AddAuthentication(options =>
 {
-	options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-	options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-	options.DefaultChallengeScheme = "HMRC";
-})
-.AddCookie()
-.AddOAuth("HMRC", options =>
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = "HMRC";
+}).AddCookie().AddOAuth("HMRC", options =>
 {
-	options.ClientId = builder.Configuration.GetValue<string>("Auth0:clientId");
-	options.ClientSecret = builder.Configuration.GetValue<string>("Auth0:clientSecret");
-	options.CallbackPath = new PathString(builder.Configuration.GetValue<string>("Auth0:callbackPath"));
-	options.Scope.Add("read:vat write:vat");
-	options.SaveTokens = true;
-
-	options.AuthorizationEndpoint = builder.Configuration.GetValue<string>("Auth0:uri") + "/oauth/authorize";
-	options.TokenEndpoint = builder.Configuration.GetValue<string>("Auth0:uri") + "/oauth/token";
+    options.ClientId = builder.Configuration.GetValue<string>("Auth0:clientId");
+    options.ClientSecret = builder.Configuration.GetValue<string>("Auth0:clientSecret");
+    options.CallbackPath = new PathString(builder.Configuration.GetValue<string>("Auth0:callbackPath"));
+    options.Scope.Add("read:vat write:vat");
+    options.SaveTokens = true;
+    options.AuthorizationEndpoint = builder.Configuration.GetValue<string>("Auth0:uri") + "/oauth/authorize";
+    options.TokenEndpoint = builder.Configuration.GetValue<string>("Auth0:uri") + "/oauth/token";
 });
-
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<SimplyMTD.SecurityService>();
 builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
 {
-	options.UseSqlServer(builder.Configuration.GetConnectionString("MTDConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MTDConnection"));
 });
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>().AddDefaultTokenProviders();
 builder.Services.AddControllers().AddOData(o =>
 {
-	var oDataBuilder = new ODataConventionModelBuilder();
-	oDataBuilder.EntitySet<ApplicationUser>("ApplicationUsers");
-	var usersType = oDataBuilder.StructuralTypes.First(x => x.ClrType == typeof(ApplicationUser));
-	usersType.AddProperty(typeof(ApplicationUser).GetProperty(nameof(ApplicationUser.Password)));
-	usersType.AddProperty(typeof(ApplicationUser).GetProperty(nameof(ApplicationUser.ConfirmPassword)));
-	oDataBuilder.EntitySet<ApplicationRole>("ApplicationRoles");
-	o.AddRouteComponents("odata/Identity", oDataBuilder.GetEdmModel()).Count().Filter().OrderBy().Expand().Select().SetMaxTop(null).TimeZone = TimeZoneInfo.Utc;
+    var oDataBuilder = new ODataConventionModelBuilder();
+    oDataBuilder.EntitySet<ApplicationUser>("ApplicationUsers");
+    var usersType = oDataBuilder.StructuralTypes.First(x => x.ClrType == typeof(ApplicationUser));
+    usersType.AddProperty(typeof(ApplicationUser).GetProperty(nameof(ApplicationUser.Password)));
+    usersType.AddProperty(typeof(ApplicationUser).GetProperty(nameof(ApplicationUser.ConfirmPassword)));
+    oDataBuilder.EntitySet<ApplicationRole>("ApplicationRoles");
+    o.AddRouteComponents("odata/Identity", oDataBuilder.GetEdmModel()).Count().Filter().OrderBy().Expand().Select().SetMaxTop(null).TimeZone = TimeZoneInfo.Utc;
 });
 builder.Services.AddScoped<AuthenticationStateProvider, SimplyMTD.ApplicationAuthenticationStateProvider>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Error");
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();

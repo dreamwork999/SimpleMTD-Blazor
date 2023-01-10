@@ -57,11 +57,21 @@ namespace SimplyMTD.Pages
 
 		protected IEnumerable<Obligation> obligations;
 
-		protected RadzenDataGrid<Obligation> grid;
+		protected IEnumerable<Liability> liabilities;
+
+		protected IEnumerable<Payment> payments;
+
+		protected RadzenDataGrid<Obligation> grid1;
+
+		protected RadzenDataGrid<Liability> grid2;
+
+		protected RadzenDataGrid<Payment> grid3;
 
 		protected override async Task OnInitializedAsync()
 		{
-			bool res = await VATService.HmrcAsync();
+			await Load();
+			// Todo:
+			/*bool res = await VATService.HmrcAsync();
 			if (res)
 			{
 				await Load();
@@ -69,13 +79,17 @@ namespace SimplyMTD.Pages
 			else
 			{
 				UriHelper.NavigateTo("hmrc", true);
-			}
+			}*/
 
 		}
 
 		protected async System.Threading.Tasks.Task Load()
 		{
 			obligations = await VATService.GetObligations();
+
+			liabilities = await VATService.GetLiabilities();
+
+			payments = await VATService.GetPayments();
 		}
 
 		async Task Submit(MouseEventArgs args, string periodKey, string start, string end)

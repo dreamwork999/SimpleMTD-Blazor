@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 
 namespace SimplyMTD.Models
 {
     public partial class ApplicationUser : IdentityUser
     {
+
         [JsonIgnore, IgnoreDataMember]
         public override string PasswordHash { get; set; }
 

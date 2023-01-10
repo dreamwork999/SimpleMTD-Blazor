@@ -1,7 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 using Radzen;
+using Radzen.Blazor;
 
 namespace SimplyMTD.Pages
 {
@@ -28,11 +33,11 @@ namespace SimplyMTD.Pages
         public MTDService MTDService { get; set; }
 
         [Parameter]
-        public string id { get; set; }
+        public string Id { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            planing = await MTDService.GetPlaningById(id);
+            planing = await MTDService.GetPlaningById(Id);
         }
         protected bool errorVisible;
         protected SimplyMTD.Models.MTD.Planing planing;
@@ -41,7 +46,7 @@ namespace SimplyMTD.Pages
         {
             try
             {
-                await MTDService.UpdatePlaning(id, planing);
+                await MTDService.UpdatePlaning(Id, planing);
                 DialogService.Close(planing);
             }
             catch (Exception ex)
@@ -61,17 +66,14 @@ namespace SimplyMTD.Pages
         protected bool hasChanges = false;
         protected bool canEdit = true;
 
-        [Inject]
-        protected SecurityService Security { get; set; }
-
 
         protected async Task ReloadButtonClick(MouseEventArgs args)
         {
-            MTDService.Reset();
+           MTDService.Reset();
             hasChanges = false;
             canEdit = true;
 
-            planing = await MTDService.GetPlaningById(id);
+            planing = await MTDService.GetPlaningById(Id);
         }
     }
 }

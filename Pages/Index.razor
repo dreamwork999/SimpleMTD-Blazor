@@ -23,25 +23,7 @@
 		<RadzenButton Icon="build" ButtonStyle="ButtonStyle.Primary" />
 	</div>
 </div>
-@*<div class="row pt-5 px-1">
-	<div class="col-12">
-		<RadzenDropDown @bind-Value="order.Type" Placeholder="VAT" Data="@types" TextProperty="Name" ValueProperty="Id" Name="Type">
-		</RadzenDropDown>
-		<RadzenCard Style="margin-top: 40px; padding: 20px 40px 40px;">
-			<RadzenLabel Text="ABC Cakes Limited" /><br>
-			<RadzenLabel Text="VAT Registration No.: 324 342 9901" />
-			<div>
-				<RadzenLabel Text="Tax Year" />
-				<RadzenDropDown @bind-Value="order.Country" Placeholder="2023/24" Data="@countries" TextProperty="Name" ValueProperty="Id" Name="Country">
-				</RadzenDropDown>
-				<RadzenButton Icon="line_weight" ButtonStyle="ButtonStyle.Primary" />
-				<RadzenButton Icon="description" ButtonStyle="ButtonStyle.Primary" />
-				<RadzenButton Icon="help" ButtonStyle="ButtonStyle.Primary" />
-				<RadzenButton Icon="build" ButtonStyle="ButtonStyle.Primary" />
-			</div>
-		</RadzenCard>
-	</div>
-</div>*@
+
 <div class="row pt-5 px-1">
 
 	<div class="col-md-12">
@@ -58,10 +40,10 @@
 				}
 				else
 				{
-					<RadzenDataGrid @ref="grid" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
+					<RadzenDataGrid @ref="grid1" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
 						<Columns>
-							<RadzenDataGridColumn TItem="Obligation" Property="start" Title="Start Date" />
-							<RadzenDataGridColumn TItem="Obligation" Property="end" Title="End Date" />
+							<RadzenDataGridColumn TItem="Obligation" Property="start" Title="Accounting Period" />
+							<RadzenDataGridColumn TItem="Obligation" Property="end" Title="" />
 							<RadzenDataGridColumn TItem="Obligation" Property="due" Title="Deadline" />
 							<RadzenDataGridColumn TItem="Obligation" Property="received" Title="Submission Date" />
 							<RadzenDataGridColumn TItem="Obligation" Property="status" Title="Status">
@@ -111,21 +93,24 @@
 				</h4>
 			</HeaderTemplate>
 			<ChildContent>
-				@if (obligations == null)
+				@if (liabilities == null)
 				{
 					<p><em>Loading...</em></p>
 				}
 				else
 				{
-					<RadzenDataGrid @ref="grid" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
+					<RadzenDataGrid @ref="grid2" Data=@liabilities FilterMode="FilterMode.Simple" TItem="Liability" Class="mt-3">
 						<Columns>
-							<RadzenDataGridColumn TItem="Obligation" Property="start" Title="Start Date" />
-							<RadzenDataGridColumn TItem="Obligation" Property="end" Title="End Date" />
-							<RadzenDataGridColumn TItem="Obligation" Property="due" Title="Due Date" />
-							<RadzenDataGridColumn TItem="Obligation" Title="Amount" />
-							<RadzenDataGridColumn TItem="Obligation" Title="Balance" />
+							<RadzenDataGridColumn TItem="Liability" Property="taxPeriod.from" Title="Start Date" />
+							<RadzenDataGridColumn TItem="Liability" Property="taxPeriod.to" Title="End Date" />
+							<RadzenDataGridColumn TItem="Liability" Property="due" Title="Due Date" />
+							<RadzenDataGridColumn TItem="Liability" Property="originalAmount" Title="Amount" />
+							<RadzenDataGridColumn TItem="Liability" Property="outstandingAmount" Title="Balance" />
 						</Columns>
 					</RadzenDataGrid>
+					<div style="float: right; margin-top: 10px;">
+						<RadzenLink Path="https://www.gov.uk/pay-vat" Text="Pay HMRC" />
+					</div>
 				}
 			</ChildContent>
 		</RadzenPanel>
@@ -139,16 +124,16 @@
 				</h4>
 			</HeaderTemplate>
 			<ChildContent>
-				@if (obligations == null)
+				@if (payments == null)
 				{
 					<p><em>Loading...</em></p>
 				}
 				else
 				{
-					<RadzenDataGrid @ref="grid" Data=@obligations FilterMode="FilterMode.Simple" TItem="Obligation" Class="mt-3">
+					<RadzenDataGrid @ref="grid3" Data=@payments FilterMode="FilterMode.Simple" TItem="Payment" Class="mt-3">
 						<Columns>
-							<RadzenDataGridColumn TItem="Obligation" Title="Amount" />
-							<RadzenDataGridColumn TItem="Obligation" Property="due" Title="Received" />
+							<RadzenDataGridColumn TItem="Payment" Property="amount" Title="Amount" />
+							<RadzenDataGridColumn TItem="Payment" Property="received" Title="Received" />
 
 						</Columns>
 					</RadzenDataGrid>

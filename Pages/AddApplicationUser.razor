@@ -16,6 +16,23 @@
             </div>
             <div style="margin-bottom: 1rem" class="row">
                 <div class="col-md-3">
+                    <RadzenLabel Component="Email" style="width: 100%" Text="Email" />
+                </div>
+                <div class="col-md-9">
+                    <RadzenTextBox style="display: block; width: 100%" @bind-Value="@(user.UserName)" Name="UserName" />
+                    <RadzenRequiredValidator Component="Email" Text="Email is required" />
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+                <div class="col-md-3">
+                    <RadzenLabel Component="Address" style="width: 100%" Text="Address" />
+                </div>
+                <div class="col-md-9">
+                    <RadzenTextBox style="width: 100%" @bind-Value="@(user.Address)" Name="Address" />
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem" class="row">
+                <div class="col-md-3">
                     <RadzenLabel Component="RoleNames" style="width: 100%" Text="Roles" />
                 </div>
                 <div class="col-md-9">

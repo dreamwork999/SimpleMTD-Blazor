@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Radzen;
 
 using SimplyMTD.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SimplyMTD
 {
@@ -25,15 +26,18 @@ namespace SimplyMTD
 
         private readonly NavigationManager navigationManager;
 
+        private readonly UserManager<ApplicationUser> userManager;
+
         public ApplicationUser User { get; private set; } = new ApplicationUser { Name = "Anonymous" };
 
         public ClaimsPrincipal Principal { get; private set; }
 
-        public SecurityService(NavigationManager navigationManager, IHttpClientFactory factory)
+        public SecurityService(UserManager<ApplicationUser> userManager, NavigationManager navigationManager, IHttpClientFactory factory)
         {
             this.baseUri = new Uri($"{navigationManager.BaseUri}odata/Identity/");
             this.httpClient = factory.CreateClient("SimplyMTD");
             this.navigationManager = navigationManager;
+            this.userManager = userManager;
         }
 
         public bool IsInRole(params string[] roles)
@@ -183,11 +187,70 @@ namespace SimplyMTD
 
             return await response.ReadAsync<ApplicationUser>();
         }
+        private void EnsureSucceeded(IdentityResult result)
+        {
+            if (!result.Succeeded)
+            {
+                var message = string.Join(", ", result.Errors.Select(error => error.Description));
 
+                throw new ApplicationException(message);
+            }
+        }
+
+        public async Task<bool> UpdateUser1(ApplicationUser user)
+        {
+            ApplicationUser user1 = await userManager.FindByIdAsync(user.Id);
+
+            user1.BusinessName = user.BusinessName;
+			user1.Nino = user.Nino;
+			user1.Vrn = user.Vrn;
+			user1.Address = user.Address;
+            user1.PhoneNumber = user.PhoneNumber;
+
+			var result = await userManager.UpdateAsync(user1);
+			if (!result.Succeeded)
+            {
+                return false;
+            } else
+            {
+                return true;
+            }
+				
+        }
         public async Task<ApplicationUser> UpdateUser(string id, ApplicationUser user)
         {
-            var uri = new Uri(baseUri, $"ApplicationUsers('{id}')");
+            /*var roles = user.Roles.ToArray();
 
+            var result = await userManager.RemoveFromRolesAsync(user, await userManager.GetRolesAsync(user));
+
+            EnsureSucceeded(result);
+
+            if (roles.Any())
+            {
+                result = await userManager.AddToRolesAsync(user, roles);
+
+                EnsureSucceeded(result);
+            }*/
+
+            /*var result = await userManager.UpdateAsync(user);
+
+            EnsureSucceeded(result);
+
+            if (!String.IsNullOrEmpty(user.Password) && user.Password == user.ConfirmPassword)
+            {
+                result = await userManager.RemovePasswordAsync(user);
+
+                EnsureSucceeded(result);
+
+                result = await userManager.AddPasswordAsync(user, user.Password);
+
+                EnsureSucceeded(result);
+            }
+
+            return user;*/
+
+            var uri = new Uri(baseUri, $"ApplicationUsers('{id}')");
+            var test = JsonSerializer.Serialize(user);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Patch, uri)
             {
                 Content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json")
