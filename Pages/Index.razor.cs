@@ -70,17 +70,6 @@ namespace SimplyMTD.Pages
 		protected override async Task OnInitializedAsync()
 		{
 			await Load();
-			// Todo:
-			/*bool res = await VATService.HmrcAsync();
-			if (res)
-			{
-				await Load();
-			}
-			else
-			{
-				UriHelper.NavigateTo("hmrc", true);
-			}*/
-
 		}
 
 		protected async System.Threading.Tasks.Task Load()
@@ -90,6 +79,12 @@ namespace SimplyMTD.Pages
 			liabilities = await VATService.GetLiabilities();
 
 			payments = await VATService.GetPayments();
+		}
+
+		public async Task OpenObligation(string periodKey)
+		{
+			await DialogService.OpenAsync<EditObligation>("View Obligation", new Dictionary<string, object> { { "PeriodKey", periodKey } },
+				new DialogOptions() { Width = "900px", Resizable = true, Draggable = true });
 		}
 
 		async Task Submit(MouseEventArgs args, string periodKey, string start, string end)
@@ -153,7 +148,7 @@ namespace SimplyMTD.Pages
 
 		Test test = new Test()
 		{
-			
+
 		};
 
 		public class TaxYear

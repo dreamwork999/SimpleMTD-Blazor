@@ -30,7 +30,7 @@ namespace SimplyMTD
 			this._store = tokenProvider;
 			this.configuration = configuration;
 			//this.token = _store.AccessToken;
-			this.token = "63f2b2b20c39cb3ba0246e25b0ed88e7";
+			this.token = "b1f2fc61b558ec2b997a8b2e4141c5f2";
 		}
 
 		public async Task<List<Obligation>> GetObligations()
@@ -49,6 +49,25 @@ namespace SimplyMTD
 				String resp = await response.Content.ReadAsStringAsync();
 				ObligationBody obligationBody = JsonConvert.DeserializeObject<ObligationBody>(resp);
 				return obligationBody.obligations;
+			}
+		}
+
+		public async Task<VATReturn> GetObligation(string periodKey)
+		{
+			var token = this.token; // Todo
+
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = new Uri(configuration.GetValue<string>("Auth0:uri"));
+				client.DefaultRequestHeaders.Accept.Clear();
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.hmrc.1.0+json"));
+				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+				HttpResponseMessage response = await client.GetAsync("organisations/vat/423439757/returns/" + periodKey);
+
+				String resp = await response.Content.ReadAsStringAsync();
+				VATReturn obligation = JsonConvert.DeserializeObject<VATReturn>(resp);
+				return obligation;
 			}
 		}
 

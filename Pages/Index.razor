@@ -12,29 +12,29 @@
 	<div class="col-md-6">
 		<RadzenText TextStyle="TextStyle.Body1"><b>@(Security.User.BusinessName)</b></RadzenText>
 		<RadzenText TextStyle="TextStyle.Body1">VAT Registration No: @(Security.User.Vrn)</RadzenText>
+		</div>
+		<div class="col-md-6  d-flex align-items-center justify-content-end">
+			<RadzenLabel Text="Tax Year" Style="margin-right: 10px" />
+			<RadzenDropDown @bind-Value="test.TaxYear" Placeholder="2023/24" Data="@taxYears" TextProperty="Name" ValueProperty="Id" Name="TaxYear" Style="margin-right: 30px">
+			</RadzenDropDown>
+			<RadzenButton Icon="line_weight" ButtonStyle="ButtonStyle.Primary" />
+			<RadzenButton Icon="description" ButtonStyle="ButtonStyle.Primary" />
+			<RadzenButton Icon="help" ButtonStyle="ButtonStyle.Primary" />
+			<RadzenButton Icon="build" ButtonStyle="ButtonStyle.Primary" />
+		</div>
 	</div>
-	<div class="col-md-6  d-flex align-items-center justify-content-end">
-		<RadzenLabel Text="Tax Year" Style="margin-right: 10px" />
-		<RadzenDropDown @bind-Value="test.TaxYear" Placeholder="2023/24" Data="@taxYears" TextProperty="Name" ValueProperty="Id" Name="TaxYear" Style="margin-right: 30px">
-		</RadzenDropDown>
-		<RadzenButton Icon="line_weight" ButtonStyle="ButtonStyle.Primary" />
-		<RadzenButton Icon="description" ButtonStyle="ButtonStyle.Primary" />
-		<RadzenButton Icon="help" ButtonStyle="ButtonStyle.Primary" />
-		<RadzenButton Icon="build" ButtonStyle="ButtonStyle.Primary" />
-	</div>
-</div>
 
-<div class="row pt-5 px-1">
+	<div class="row pt-5 px-1">
 
-	<div class="col-md-12">
-		<RadzenPanel>
-			<HeaderTemplate>
-				<h4 class="m-0 d-flex align-items-center">
-					<RadzenIcon Icon="list" Class="me-1" /><b>Obligations</b>
-				</h4>
-			</HeaderTemplate>
-			<ChildContent>
-				@if (obligations == null)
+		<div class="col-md-12">
+			<RadzenPanel>
+				<HeaderTemplate>
+					<h4 class="m-0 d-flex align-items-center">
+						<RadzenIcon Icon="list" Class="me-1" /><b>Obligations</b>
+					</h4>
+				</HeaderTemplate>
+				<ChildContent>
+					@if (obligations == null)
 				{
 					<p><em>Loading...</em></p>
 				}
@@ -66,7 +66,7 @@
 									}
 									else
 									{
-										<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Text="View" />
+										<RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Text="View" Click=@(() => OpenObligation(obligation.periodKey)) />
 									}
 
 								</Template>
@@ -104,8 +104,16 @@
 							<RadzenDataGridColumn TItem="Liability" Property="taxPeriod.from" Title="Start Date" />
 							<RadzenDataGridColumn TItem="Liability" Property="taxPeriod.to" Title="End Date" />
 							<RadzenDataGridColumn TItem="Liability" Property="due" Title="Due Date" />
-							<RadzenDataGridColumn TItem="Liability" Property="originalAmount" Title="Amount" />
-							<RadzenDataGridColumn TItem="Liability" Property="outstandingAmount" Title="Balance" />
+							<RadzenDataGridColumn TItem="Liability" Property="originalAmount" Title="Amount">
+								<Template Context="liability">
+									@String.Format(new System.Globalization.CultureInfo("en-GB"), "{0:C}", liability.originalAmount)
+								</Template>
+							</RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="Liability" Property="outstandingAmount" Title="Balance">
+								<Template Context="liability">
+									@String.Format(new System.Globalization.CultureInfo("en-GB"), "{0:C}", liability.outstandingAmount)
+								</Template>
+							</RadzenDataGridColumn>
 						</Columns>
 					</RadzenDataGrid>
 					<div style="float: right; margin-top: 10px;">
@@ -132,7 +140,11 @@
 				{
 					<RadzenDataGrid @ref="grid3" Data=@payments FilterMode="FilterMode.Simple" TItem="Payment" Class="mt-3">
 						<Columns>
-							<RadzenDataGridColumn TItem="Payment" Property="amount" Title="Amount" />
+							<RadzenDataGridColumn TItem="Payment" Property="amount" Title="Amount">
+								<Template Context="payment">
+									@String.Format(new System.Globalization.CultureInfo("en-GB"), "{0:C}", payment.amount)
+								</Template>
+							</RadzenDataGridColumn>
 							<RadzenDataGridColumn TItem="Payment" Property="received" Title="Received" />
 
 						</Columns>
@@ -219,7 +231,7 @@
 </div>*@
 
 @code {
-	
+
 
 	public class Type
 	{
@@ -227,7 +239,7 @@
 		public string Name { get; set; }
 	}
 
-	
+
 
 	List<Type> types = new List<Type>()
 	{
