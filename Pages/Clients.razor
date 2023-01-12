@@ -1,0 +1,85 @@
+@page "/clients"
+
+<PageTitle>Clients</PageTitle>
+
+<div class="row" style="margin-bottom: 1rem">
+    <div class="col-12 col-md-6">
+        <RadzenText Text="Clients" TextStyle="TextStyle.H3" TagName="TagName.H1" style="margin: 0" />
+    </div>
+    <div class="col-12 col-md-6 justify-content-start justify-content-md-end" style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem">
+    <RadzenSplitButton Icon="get_app" style="margin-left: 10px; margin-bottom: 10px" Text="Export" Click="@ExportClick" Variant="Variant.Flat" Shade="Shade.Lighter">
+        <RadzenSplitButtonItem Text="Excel" Value="xlsx" />
+        <RadzenSplitButtonItem Text="CSV" Value="csv" />
+    </RadzenSplitButton>
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat" />
+    </div>
+</div>
+<div class="row" style="margin-bottom: 1rem">
+    <div class="col-12">
+        <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"  AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true"
+            Data="@clients"    TItem="SimplyMTD.Models.MTD.Client" RowDoubleClick="@EditRow" >
+            <Columns>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="ClientId" Title="ID">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="ClientName" Title="Client Name">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="VATNumber" Title="VAT Number">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="NextTask" Title="Next Task">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="DueDate" Title="Due Date">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="Deadline" Title="Deadline">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="Manager" Title="Manager">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="Partner" Title="Partner">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="Authorisation" Title="Authorisation">
+                    <Template Context="client">
+                        @if (client.Authorisation == "Not Authorised")
+                        {
+                            <span class="rz-color-danger-dark">Not Authorised</span>
+                        }
+                        else if (client.Authorisation == "Pending Approval")
+                        {
+                            <span class="rz-color-warning-light">Pending Approval</span>
+                        } else if(client.Authorisation == "Authorised"){
+                            <span class="rz-color-success">Authorised</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="Subscription" Title="Subscription">
+                    <Template Context="client">
+                        @if (client.Subscription == "Expired")
+                        {
+                            <span class="rz-color-danger-dark">Expired</span>
+                        }
+                        else if (client.Authorisation == "Overdue")
+                        {
+                            <span class="rz-color-warning-light">Overdue</span>
+                        } else if (client.Subscription == "Active"){
+                            <span class="rz-color-success">Active</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="Note" Title="Note">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Property="UserId" Title="UserId">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SimplyMTD.Models.MTD.Client" Filterable="false" Sortable="false" Width="70px" TextAlign="TextAlign.Center">
+                    <Template Context="client">
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
+                            Shade="Shade.Lighter" Variant="Variant.Flat"
+                            Click=@(args => GridDeleteButtonClick(args, client)) @onclick:stopPropagation="true" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>

@@ -25,12 +25,14 @@ namespace SimplyMTD.Data
             this.OnModelBuilding(builder);
         }
 
-        public DbSet<SimplyMTD.Models.MTD.Planing> Planings { get; set; }
+		public DbSet<SimplyMTD.Models.MTD.Planing> Planings { get; set; }
 
 		public DbSet<SimplyMTD.Models.MTD.Billing> Billings { get; set; }
 
 		public DbSet<SimplyMTD.Models.MTD.Accounting> Accountings { get; set; }
 
 		public DbSet<SimplyMTD.Models.MTD.Accountant> Accountants { get; set; }
+
+		public DbSet<SimplyMTD.Models.MTD.Client> Clients { get; set; }
 	}
 }

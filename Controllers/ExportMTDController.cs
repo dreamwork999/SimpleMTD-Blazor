@@ -19,18 +19,18 @@ namespace SimplyMTD.Controllers
             this.context = context;
         }
 
-        [HttpGet("/export/MTD/planings/csv")]
-        [HttpGet("/export/MTD/planings/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportPlaningsToCSV(string fileName = null)
+        [HttpGet("/export/MTD/clients/csv")]
+        [HttpGet("/export/MTD/clients/csv(fileName='{fileName}')")]
+        public async Task<FileStreamResult> ExportClientsToCSV(string fileName = null)
         {
-            return ToCSV(ApplyQuery(await service.GetPlanings(), Request.Query), fileName);
+            return ToCSV(ApplyQuery(await service.GetClients(), Request.Query), fileName);
         }
 
-        [HttpGet("/export/MTD/planings/excel")]
-        [HttpGet("/export/MTD/planings/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportPlaningsToExcel(string fileName = null)
+        [HttpGet("/export/MTD/clients/excel")]
+        [HttpGet("/export/MTD/clients/excel(fileName='{fileName}')")]
+        public async Task<FileStreamResult> ExportClientsToExcel(string fileName = null)
         {
-            return ToExcel(ApplyQuery(await service.GetPlanings(), Request.Query), fileName);
+            return ToExcel(ApplyQuery(await service.GetClients(), Request.Query), fileName);
         }
     }
 }
