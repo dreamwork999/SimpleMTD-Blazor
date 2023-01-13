@@ -1,7 +1,10 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SimplyMTD.Models;
 using System;
+using System.Security.Claims;
 using System.Text;
 
 namespace SimplyMTD.Controllers
@@ -10,10 +13,13 @@ namespace SimplyMTD.Controllers
     {
         private readonly IWebHostEnvironment environment;
 
-        public UploadController(IWebHostEnvironment environment)
+		private readonly UserManager<ApplicationUser> userManager;
+
+		public UploadController(IWebHostEnvironment environment, UserManager<ApplicationUser> userManager)
         {
             this.environment = environment;
-        }
+			this.userManager = userManager;
+		}
 
         // Single file upload
         [HttpPost("upload/single")]
@@ -96,7 +102,7 @@ namespace SimplyMTD.Controllers
 
         // Image file upload (used by HtmlEditor components)
         [HttpPost("upload/image")]
-        public IActionResult Image(IFormFile file)
+        public async Task<IActionResult> Image(IFormFile file)
         {
             try
             {
@@ -109,9 +115,19 @@ namespace SimplyMTD.Controllers
 
                     // Return the URL of the file
                     var url = Url.Content($"~/{fileName}");
+					string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+					var user = await userManager.FindByIdAsync(id);
 
-                    return Ok(new { Url = url });
-                }
+					if (user == null)
+                    {
+                        return NotFound();
+                    }
+
+					user.Photo = fileName;
+					await userManager.UpdateAsync(user);
+
+					return Ok(new { Url = fileName });
+				}
             }
             catch (Exception ex)
             {

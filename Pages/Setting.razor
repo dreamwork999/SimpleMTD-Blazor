@@ -71,8 +71,11 @@
 									<div class="col-md-4 align-items-center d-flex">
 										<RadzenLabel Text="Profile Photo" />
 									</div>
-									<div class="col-md-6">
-										<RadzenUpload @ref="upload" Auto="false" Url="upload/single" Change=@(args => OnChange(args, "Manual Upload"))
+									<div class="col-md-4">
+										<RadzenImage Path="@user.Photo" Style="width: 100%;"></RadzenImage>
+									</div>
+									<div class="col-md-4">
+										<RadzenUpload @ref="upload" Auto="false" Url="upload/image" Change=@(args => OnChange(args, "Manual Upload"))
 													  Progress=@(args => OnProgress(args, "Manual Upload")) Complete=@OnComplete class="w-100" />
 										<RadzenButton Text="Upload" Click=@(args => upload.Upload()) class="d-block mt-4" />
 									</div>

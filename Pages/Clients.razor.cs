@@ -45,11 +45,11 @@ namespace SimplyMTD.Pages
 
             await grid0.GoToPage(0);
 
-            clients = await MTDService.GetClients(new Query { Filter = $@"i => i.Id.Contains(@0) || i.IDNo.Contains(@0) || i.ClientName.Contains(@0) || i.VATNumber.Contains(@0) || i.NextTask.Contains(@0) || i.Manager.Contains(@0) || i.Partner.Contains(@0) || i.Authorisation.Contains(@0) || i.Subscription.Contains(@0) || i.Note.Contains(@0) || i.UserId.Contains(@0)", FilterParameters = new object[] { search } });
+            clients = await MTDService.GetClients(new Query { Filter = $@"i => i.Id.Contains(@0) || i.ClientId.Contains(@0) || i.ClientName.Contains(@0) || i.VATNumber.Contains(@0) || i.NextTask.Contains(@0) || i.Manager.Contains(@0) || i.Partner.Contains(@0) || i.Authorisation.Contains(@0) || i.Subscription.Contains(@0) || i.Note.Contains(@0) || i.UserId.Contains(@0)", FilterParameters = new object[] { search } });
         }
         protected override async Task OnInitializedAsync()
         {
-            clients = await MTDService.GetClients(new Query { Filter = $@"i => i.Id.Contains(@0) || i.IDNo.Contains(@0) || i.ClientName.Contains(@0) || i.VATNumber.Contains(@0) || i.NextTask.Contains(@0) || i.Manager.Contains(@0) || i.Partner.Contains(@0) || i.Authorisation.Contains(@0) || i.Subscription.Contains(@0) || i.Note.Contains(@0) || i.UserId.Contains(@0)", FilterParameters = new object[] { search } });
+            clients = await MTDService.GetClients(new Query { Filter = $@"i => i.Id.Contains(@0) || i.ClientId.Contains(@0) || i.ClientName.Contains(@0) || i.VATNumber.Contains(@0) || i.NextTask.Contains(@0) || i.Manager.Contains(@0) || i.Partner.Contains(@0) || i.Authorisation.Contains(@0) || i.Subscription.Contains(@0) || i.Note.Contains(@0) || i.UserId.Contains(@0)", FilterParameters = new object[] { search } });
         }
 
         protected async Task AddButtonClick(MouseEventArgs args)

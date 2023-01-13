@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Identity.Client;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using Radzen;
 using Radzen.Blazor;
 using SimplyMTD.Models;
 using SimplyMTD.Models.MTD;
+using System;
 
 namespace SimplyMTD.Pages
 {
@@ -45,6 +47,8 @@ namespace SimplyMTD.Pages
         public MTDService MTDService { get; set; }
 
 		RadzenUpload upload;
+
+		protected string PhotoUrl;
 
 		protected SimplyMTD.Models.MTD.Billing billing;
 
@@ -164,7 +168,9 @@ namespace SimplyMTD.Pages
 
 		void OnComplete(UploadCompleteEventArgs args)
 		{
-			
+			var test = args.JsonResponse;
+			PhotoUrl = JsonConvert.DeserializeObject<UploadRes>(args.RawResponse).Url;
+			user.Photo = PhotoUrl;
 		}
 
 		void OnChange(UploadChangeEventArgs args, string name)
@@ -207,5 +213,10 @@ namespace SimplyMTD.Pages
 		};
 
 		IEnumerable<int> values = new int[] { 1 };
+
+		public class UploadRes
+		{
+			public string Url { get; set; }
+		}
 	}
 }

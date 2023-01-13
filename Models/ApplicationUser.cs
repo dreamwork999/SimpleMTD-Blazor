@@ -34,13 +34,16 @@ namespace SimplyMTD.Models
 
         public string BusinessName { get; set; }
 
-        public string Nino { get; set; }
+		public string BusinessType { get; set; }
+
+		public string Nino { get; set; }
 
         public string Vrn { get; set; }
 
         public string Address { get; set; }
 
-        
-        public ICollection<ApplicationRole> Roles { get; set; }
+        public string Photo { get; set; }
+
+		public ICollection<ApplicationRole> Roles { get; set; }
     }
 }
