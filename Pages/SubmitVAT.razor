@@ -55,7 +55,7 @@
 	</RadzenCard>
 	
 
-	<RadzenTemplateForm TItem="SimplyMTD.Models.VATReturn" Data="@vatReturn" Submit="@FormSubmit">
+		<RadzenTemplateForm TItem="SimplyMTD.Models.VATReturn" Data="@vatReturn" Submit="@FormSubmit" InvalidSubmit=@OnInvalidSubmit>
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-md-12">
@@ -145,9 +145,14 @@
 
 						</RadzenFieldset>
 						<div class="row">
-							<div class="col-md-12">
-								<RadzenLabel Text="When you submit this VAT information you are making a legal declaration that the information is true and complete. A false declaration can result in prosecution." />
+							<div class="col-md-12 d-flex align-items-center mt-3">
+								<RadzenCheckBox Name="Confirm" TValue="bool" />
+								<RadzenLabel Text="When you submit this VAT information you are making a legal declaration that the information is true and complete. A false declaration can result in prosecution." Style="margin-left: 15px; " />
+								<RadzenRequiredValidator Component="Confirm" Text="First name is required" Style="position: absolute" />
 							</div>
+							@*<RadzenNumeric style="width: 100%;" Name="FirstName" @bind-Value="@(vatReturn.totalAcquisitionsExVAT)" />
+							@*<RadzenTextBox style="display: block" Name="FirstName" @bind-Value="@(vatReturn.totalAcquisitionsExVAT.ToString())" Class="w-100" />*@
+							@*<RadzenRequiredValidator Component="FirstName"   Text="First name is required" Style="position: absolute" />*@
 						</div>
 					</div>
 				</div>

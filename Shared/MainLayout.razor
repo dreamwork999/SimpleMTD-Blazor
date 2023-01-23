@@ -34,7 +34,8 @@
 						<RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="power_settings_new" />
 					</ChildContent>
 					<Template>
-						<RadzenGravatar Email="@Security.User?.Name" />
+						
+						<RadzenImage Path="@Security.User?.Photo" Style="height: 40px;"></RadzenImage>
 					</Template>
 				</RadzenProfileMenu>
 			</div>

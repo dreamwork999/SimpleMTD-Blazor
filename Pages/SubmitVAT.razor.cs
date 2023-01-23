@@ -8,6 +8,7 @@ using SimplyMTD.Models.MTD;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Text.Json;
 
 namespace SimplyMTD.Pages
 {
@@ -91,6 +92,11 @@ namespace SimplyMTD.Pages
 			{
 				ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error Summary", Detail = "", Duration = 4000 });
 			}
+		}
+
+		void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+		{
+			//console.Log($"InvalidSubmit: {JsonSerializer.Serialize(args, new JsonSerializerOptions() { WriteIndented = true })}");
 		}
 
 		void Cancel()

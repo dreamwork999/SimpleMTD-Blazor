@@ -214,6 +214,13 @@ namespace SimplyMTD.Pages
 
 		IEnumerable<int> values = new int[] { 1 };
 
+		List<Basis> businessTypes = new List<Basis>()
+		{
+			new Basis() { Id = "Sole Trader", Name = "Sole Trader" },
+			new Basis() { Id = "Small Business Limited Company", Name = "Small Business Limited Company" },
+			new Basis() { Id = "LLP Partnership", Name = "LLP Partnership" },
+		};
+
 		public class UploadRes
 		{
 			public string Url { get; set; }
