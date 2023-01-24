@@ -527,5 +527,190 @@ namespace SimplyMTD
 
 			return itemToDelete;
 		}
+
+
+
+
+		public async Task ExportAspNetUsersToExcel(Query query = null, string fileName = null)
+		{
+			navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mtd/aspnetusers/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mtd/aspnetusers/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+		}
+
+		public async Task ExportAspNetUsersToCSV(Query query = null, string fileName = null)
+		{
+			navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mtd/aspnetusers/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mtd/aspnetusers/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+		}
+
+		partial void OnAspNetUsersRead(ref IQueryable<SimplyMTD.Models.MTD.AspNetUser> items);
+
+		public async Task<IQueryable<SimplyMTD.Models.MTD.AspNetUser>> GetAspNetUsers(Query query = null)
+		{
+			var items = Context.AspNetUsers.AsQueryable();
+
+			if (query != null)
+			{
+				if (!string.IsNullOrEmpty(query.Expand))
+				{
+					var propertiesToExpand = query.Expand.Split(',');
+					foreach (var p in propertiesToExpand)
+					{
+						items = items.Include(p.Trim());
+					}
+				}
+
+				if (!string.IsNullOrEmpty(query.Filter))
+				{
+					if (query.FilterParameters != null)
+					{
+						items = items.Where(query.Filter, query.FilterParameters);
+					}
+					else
+					{
+						items = items.Where(query.Filter);
+					}
+				}
+
+				if (!string.IsNullOrEmpty(query.OrderBy))
+				{
+					items = items.OrderBy(query.OrderBy);
+				}
+
+				if (query.Skip.HasValue)
+				{
+					items = items.Skip(query.Skip.Value);
+				}
+
+				if (query.Top.HasValue)
+				{
+					items = items.Take(query.Top.Value);
+				}
+			}
+
+			OnAspNetUsersRead(ref items);
+
+			return await Task.FromResult(items);
+		}
+
+		partial void OnAspNetUserGet(SimplyMTD.Models.MTD.AspNetUser item);
+
+		public async Task<SimplyMTD.Models.MTD.AspNetUser> GetAspNetUserById(string id)
+		{
+			var items = Context.AspNetUsers
+							  .AsNoTracking()
+							  .Where(i => i.Id == id);
+
+
+			var itemToReturn = items.FirstOrDefault();
+
+			OnAspNetUserGet(itemToReturn);
+
+			return await Task.FromResult(itemToReturn);
+		}
+
+		partial void OnAspNetUserCreated(SimplyMTD.Models.MTD.AspNetUser item);
+		partial void OnAfterAspNetUserCreated(SimplyMTD.Models.MTD.AspNetUser item);
+
+		public async Task<SimplyMTD.Models.MTD.AspNetUser> CreateAspNetUser(SimplyMTD.Models.MTD.AspNetUser aspnetuser)
+		{
+			OnAspNetUserCreated(aspnetuser);
+
+			var existingItem = Context.AspNetUsers
+							  .Where(i => i.Id == aspnetuser.Id)
+							  .FirstOrDefault();
+
+			if (existingItem != null)
+			{
+				throw new Exception("Item already available");
+			}
+
+			try
+			{
+				Context.AspNetUsers.Add(aspnetuser);
+				Context.SaveChanges();
+			}
+			catch
+			{
+				Context.Entry(aspnetuser).State = EntityState.Detached;
+				throw;
+			}
+
+			OnAfterAspNetUserCreated(aspnetuser);
+
+			return aspnetuser;
+		}
+
+		public async Task<SimplyMTD.Models.MTD.AspNetUser> CancelAspNetUserChanges(SimplyMTD.Models.MTD.AspNetUser item)
+		{
+			var entityToCancel = Context.Entry(item);
+			if (entityToCancel.State == EntityState.Modified)
+			{
+				entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+				entityToCancel.State = EntityState.Unchanged;
+			}
+
+			return item;
+		}
+
+		partial void OnAspNetUserUpdated(SimplyMTD.Models.MTD.AspNetUser item);
+		partial void OnAfterAspNetUserUpdated(SimplyMTD.Models.MTD.AspNetUser item);
+
+		public async Task<SimplyMTD.Models.MTD.AspNetUser> UpdateAspNetUser(string id, SimplyMTD.Models.MTD.AspNetUser aspnetuser)
+		{
+			OnAspNetUserUpdated(aspnetuser);
+
+			var itemToUpdate = Context.AspNetUsers
+							  .Where(i => i.Id == aspnetuser.Id)
+							  .FirstOrDefault();
+
+			if (itemToUpdate == null)
+			{
+				throw new Exception("Item no longer available");
+			}
+
+			var entryToUpdate = Context.Entry(itemToUpdate);
+			entryToUpdate.CurrentValues.SetValues(aspnetuser);
+			entryToUpdate.State = EntityState.Modified;
+
+			Context.SaveChanges();
+
+			OnAfterAspNetUserUpdated(aspnetuser);
+
+			return aspnetuser;
+		}
+
+		partial void OnAspNetUserDeleted(SimplyMTD.Models.MTD.AspNetUser item);
+		partial void OnAfterAspNetUserDeleted(SimplyMTD.Models.MTD.AspNetUser item);
+
+		public async Task<SimplyMTD.Models.MTD.AspNetUser> DeleteAspNetUser(string id)
+		{
+			var itemToDelete = Context.AspNetUsers
+							  .Where(i => i.Id == id)
+							  .FirstOrDefault();
+
+			if (itemToDelete == null)
+			{
+				throw new Exception("Item no longer available");
+			}
+
+			OnAspNetUserDeleted(itemToDelete);
+
+
+			Context.AspNetUsers.Remove(itemToDelete);
+
+			try
+			{
+				Context.SaveChanges();
+			}
+			catch
+			{
+				Context.Entry(itemToDelete).State = EntityState.Unchanged;
+				throw;
+			}
+
+			OnAfterAspNetUserDeleted(itemToDelete);
+
+			return itemToDelete;
+		}
+
 	}
 }

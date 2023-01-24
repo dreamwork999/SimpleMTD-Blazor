@@ -32,5 +32,19 @@ namespace SimplyMTD.Controllers
         {
             return ToExcel(ApplyQuery(await service.GetClients(), Request.Query), fileName);
         }
-    }
+
+		[HttpGet("/export/MTD/aspnetusers/csv")]
+		[HttpGet("/export/MTD/aspnetusers/csv(fileName='{fileName}')")]
+		public async Task<FileStreamResult> ExportAspNetUsersToCSV(string fileName = null)
+		{
+			return ToCSV(ApplyQuery(await service.GetAspNetUsers(), Request.Query), fileName);
+		}
+
+		[HttpGet("/export/MTD/aspnetusers/excel")]
+		[HttpGet("/export/MTD/aspnetusers/excel(fileName='{fileName}')")]
+		public async Task<FileStreamResult> ExportAspNetUsersToExcel(string fileName = null)
+		{
+			return ToExcel(ApplyQuery(await service.GetAspNetUsers(), Request.Query), fileName);
+		}
+	}
 }

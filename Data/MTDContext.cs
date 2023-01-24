@@ -34,5 +34,7 @@ namespace SimplyMTD.Data
 		public DbSet<SimplyMTD.Models.MTD.Accountant> Accountants { get; set; }
 
 		public DbSet<SimplyMTD.Models.MTD.Client> Clients { get; set; }
+
+		public DbSet<SimplyMTD.Models.MTD.AspNetUser> AspNetUsers { get; set; }
 	}
 }

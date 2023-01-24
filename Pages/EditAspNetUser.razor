@@ -1,0 +1,158 @@
+@page "/edit-asp-net-user"
+
+<PageTitle>Edit AspNetUser</PageTitle>
+<div class="row">
+	<div class="col-md-9">
+		<RadzenLabel style="font-weight: bold" Text="Item no longer available." Visible="@(!canEdit)" />
+	</div>
+	<div class="col-md-3">
+		<RadzenButton ButtonStyle="ButtonStyle.Secondary" style="margin-bottom: 20px" Text="Close" Visible="@(!canEdit)" Click="@CancelButtonClick" />
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-9">
+		<RadzenLabel style="font-weight: bold" Text="Another user has made conflicting changes to one or more of the fields you have modified. Please reload." Visible="@hasChanges" />
+	</div>
+	<div class="col-md-3">
+		<RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="autorenew" style="margin-bottom: 20px" Text="Reload" Visible="@hasChanges" Click="@ReloadButtonClick" />
+	</div>
+</div>
+<div class="col-md-12">
+	<RadzenAlert Shade="Shade.Lighter" Variant="Variant.Flat" Size="AlertSize.Small" AlertStyle="AlertStyle.Danger" Visible="@errorVisible">Cannot save AspNetUser</RadzenAlert>
+	<div class="row" style="margin-bottom: 1rem">
+
+		<RadzenButton ButtonStyle="Radzen.ButtonStyle.Info" ButtonType="Radzen.ButtonType.Button" Icon="accessibility" Text="ACCESS CLIENT DASHBOARD" Variant="Radzen.Variant.Flat" Size="Radzen.ButtonSize.Large" Style="width: 50%; margin: auto" />
+	</div>
+	<RadzenTemplateForm TItem="SimplyMTD.Models.MTD.AspNetUser" Data="@aspNetUser" Visible="@(aspNetUser != null && canEdit)" Submit="@FormSubmit">
+		<div class="row">
+			<div class="col-md-6">
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Client ID" Component="Id" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Id" Name="Id" />
+						<RadzenRequiredValidator Component="Id" Text="Id is required" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Business Name" Component="BusinessName" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.BusinessName" Name="BusinessName" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Business Type" Component="BusinessType" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.BusinessType" Name="BusinessType" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Owner Name" Component="OwnerName" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.OwnerName" Name="OwnerName" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Address Line 1" Component="Address" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Address" Name="Address" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Address Line 2" Component="Address2" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Address2" Name="Address2" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Post Code" Component="PostCode" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.PostCode" Name="PostCode" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Mobile" Component="PhoneNumber" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.PhoneNumber" Name="PhoneNumber" />
+					</div>
+				</div>
+
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="VAT Number" Component="Vrn" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Vrn" Name="Vrn" />
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="MTD Authorisation" Component="Id" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Id" Name="Id" />
+						<RadzenRequiredValidator Component="Id" Text="Id is required" />
+					</div>
+				</div>
+
+
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Software Subscription" Component="Id" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Id" Name="Id" />
+						<RadzenRequiredValidator Component="Id" Text="Id is required" />
+					</div>
+				</div>
+
+
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Partner" Component="Id" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Id" Name="Id" />
+						<RadzenRequiredValidator Component="Id" Text="Id is required" />
+					</div>
+				</div>
+				<div style="margin-bottom: 1rem" class="row">
+					<div class="col-md-3">
+						<RadzenLabel Text="Manager" Component="Id" style="width: 100%" />
+					</div>
+					<div class="col-md-9">
+						<RadzenTextBox style="display: block; width: 100%" @bind-Value="@aspNetUser.Id" Name="Id" />
+						<RadzenRequiredValidator Component="Id" Text="Id is required" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="row">
+			<div class="col d-flex justify-content-end" style="margin-top: 1rem">
+				<RadzenButton ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Icon="save" Text="Edit Information" Style="margin-right: 0.5rem" Variant="Variant.Flat" />
+				<RadzenButton ButtonStyle="Radzen.ButtonStyle.Danger" ButtonType="ButtonType.Submit" Icon="delete" Text="Delete Client" Style="margin-right: 0.5rem" Variant="Variant.Flat" />
+				<RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Variant="Variant.Flat" Click="@CancelButtonClick" />
+			</div>
+		</div>
+	</RadzenTemplateForm>
+</div>
+
