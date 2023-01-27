@@ -31,8 +31,10 @@ namespace SimplyMTD.Models
                 UserName = value;
             }
         }
+        
+        public int ClientId { get; set; }
 
-        public string BusinessName { get; set; }
+		public string BusinessName { get; set; }
 
 		public string BusinessType { get; set; }
 
@@ -43,6 +45,12 @@ namespace SimplyMTD.Models
         public string Address { get; set; }
 
         public string Photo { get; set; }
+
+		public DateTime? Start { get; set; }
+
+		public DateTime? End { get; set; }
+
+		public DateTime? Deadline { get; set; }
 
 		public ICollection<ApplicationRole> Roles { get; set; }
     }

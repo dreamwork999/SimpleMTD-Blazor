@@ -75,5 +75,11 @@ namespace SimplyMTD.Pages
 
             aspNetUser = await MTDService.GetAspNetUserById(Id);
         }
-    }
+
+        protected async Task InformClient(MouseEventArgs args)
+        {
+			await DialogService.OpenAsync<InformClient>("Inform Client", new Dictionary<string, object> { { "Id", Id } }, new DialogOptions() { Width = "500px", Height = "300px", Resizable = true, Draggable = true });
+		}
+
+	}
 }

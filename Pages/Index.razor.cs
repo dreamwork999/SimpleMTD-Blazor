@@ -1,8 +1,10 @@
 using System.Diagnostics.Metrics;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Intrinsics.X86;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Humanizer;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +15,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.JSInterop;
 using Microsoft.OData;
 using Newtonsoft.Json;
@@ -67,6 +70,8 @@ namespace SimplyMTD.Pages
 
 		protected RadzenDataGrid<Payment> grid3;
 
+		protected SimplyMTD.Models.ApplicationUser user;
+
 		protected override async Task OnInitializedAsync()
 		{
 			await Load();
@@ -75,6 +80,20 @@ namespace SimplyMTD.Pages
 		protected async System.Threading.Tasks.Task Load()
 		{
 			obligations = await VATService.GetObligations();
+
+			foreach(var obligation in obligations)
+			{
+				if(obligation.status == "O")
+				{
+					// update the client 
+					user = await Security.GetUserById($"{Security.User.Id}");
+					user.Start = DateTime.Parse(obligation.start);
+					user.End = DateTime.Parse(obligation.end);
+					user.Deadline = DateTime.Parse(obligation.due);
+					bool res = await Security.UpdateUser2(user);
+					break;
+				}
+			}
 
 			liabilities = await VATService.GetLiabilities();
 

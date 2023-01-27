@@ -60,7 +60,7 @@ namespace SimplyMTD.Pages
 
 		protected async Task EditRow(DataGridRowMouseEventArgs<SimplyMTD.Models.MTD.AspNetUser> args)
 		{
-			await DialogService.OpenAsync<EditAspNetUser>("Edit AspNetUser", new Dictionary<string, object> { { "Id", args.Data.Id } });
+			await DialogService.OpenAsync<EditAspNetUser>("Edit AspNetUser", new Dictionary<string, object> { { "Id", args.Data.Id } }, new DialogOptions() { Width = "900px", Height = "512px", Resizable = true, Draggable = true });
 		}
 
 		protected async Task GridDeleteButtonClick(MouseEventArgs args, SimplyMTD.Models.MTD.AspNetUser aspNetUser)

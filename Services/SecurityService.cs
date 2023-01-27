@@ -217,7 +217,28 @@ namespace SimplyMTD
             }
 				
         }
-        public async Task<ApplicationUser> UpdateUser(string id, ApplicationUser user)
+
+		public async Task<bool> UpdateUser2(ApplicationUser user)
+		{
+			ApplicationUser user1 = await userManager.FindByIdAsync(user.Id);
+
+			user1.Start = user.Start;
+			user1.End = user.End;
+			user1.Deadline = user.Deadline;
+
+			var result = await userManager.UpdateAsync(user1);
+			if (!result.Succeeded)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+
+		}
+
+		public async Task<ApplicationUser> UpdateUser(string id, ApplicationUser user)
         {
             /*var roles = user.Roles.ToArray();
 

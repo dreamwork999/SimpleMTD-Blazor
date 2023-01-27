@@ -140,8 +140,10 @@ namespace SimplyMTD.Controllers
             {
                 return BadRequest("Invalid user name or password.");
             }
-
-            var user = new ApplicationUser { UserName = userName, Email = userName };
+			string startTime = "1/06/2010";
+			var seconds = (DateTime.Now - DateTime.Parse(startTime)).TotalSeconds;
+            var clientId = Convert.ToInt32(seconds % 100000000);
+			var user = new ApplicationUser { UserName = userName, Email = userName, ClientId = clientId };
 
             var result = await userManager.CreateAsync(user, password);
 

@@ -43,6 +43,8 @@ namespace SimplyMTD.Models.MTD
         [Required]
         public bool TwoFactorEnabled { get; set; }
 
+        public int ClientId { get; set; }
+
         public string UserName { get; set; }
 
         public string Vrn { get; set; }
